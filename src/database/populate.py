@@ -3,8 +3,9 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from tqdm import tqdm
 
-from config import get_settings
-from database import MovieModel, get_db_contextmanager
+from src.config.settings import get_settings
+from src.database.models import MovieModel
+from src.database.session import get_db_contextmanager
 
 
 class CSVDatabaseSeeder:
@@ -39,7 +40,6 @@ class CSVDatabaseSeeder:
 
             with self._db_session.begin():
                 for _, row in tqdm(data.iterrows(), total=data.shape[0], desc="Seeding database"):
-
                     movie = MovieModel(
                         name=row['names'],
                         date=row['date_x'],
