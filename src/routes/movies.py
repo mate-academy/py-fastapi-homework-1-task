@@ -20,9 +20,8 @@ def get_movies(
     total_pages = math.ceil(total_items / per_page)
 
     first_element = (page - 1) * per_page
-    last_element = page * per_page
 
-    movies = db.query(MovieModel).slice(first_element, last_element).all()
+    movies = db.query(MovieModel).offset(first_element).limit(per_page).all()
 
     if not movies:
         raise HTTPException(status_code=404, detail="No movies found.")
