@@ -30,7 +30,7 @@ def get_list_movies(page: int = Query(default=1, ge=1),
         total_items=total_items,
         total_pages=total_pages,
         prev_page=None if page == 1 else prev_page,
-        next_page=next_page,
+        next_page=None if page == total_pages else next_page,
     )
 
 
