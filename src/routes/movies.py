@@ -10,13 +10,19 @@ router = APIRouter()
 
 
 @router.get("/movies", response_model=MovieListResponseSchema)
-def get_movies(page: int = Query(1, ge=1), per_page: int = Query(10, ge=1), db: Session = Depends(get_db)):
+def get_movies(
+        page: int = Query(1, ge=1),
+        per_page: int = Query(10, ge=1),
+        db: Session = Depends(get_db)
+):
     movies = db.query(MovieModel).offset((page - 1) * per_page).limit(per_page).all()
     total_movies = db.query(MovieModel).count()
-
+    prev_page = f"/theater/movies/?page={page - 1}&per_page={per_page}"
+    next_page = f"/theater/movies/?page={page + 1}&per_page={per_page}"
     if not movies:
         raise HTTPException(status_code=404, detail="No movies found.")
-    if (page and page < 1):
+
+    if page and page < 1:
         raise HTTPException(
             status_code=422,
             detail=[
@@ -27,10 +33,11 @@ def get_movies(page: int = Query(1, ge=1), per_page: int = Query(10, ge=1), db: 
                 }
             ]
         )
+
     return {
         "movies": movies,
-        "prev_page": f"/theater/movies/?page={page - 1}&per_page={per_page}" if page > 1 else None,
-        "next_page": f"/theater/movies/?page={page + 1}&per_page={per_page}" if total_movies > (page * per_page) else None,
+        "prev_page": prev_page if page > 1 else None,
+        "next_page": next_page if total_movies > (page * per_page) else None,
         "total_pages": (total_movies // per_page) + (1 if total_movies % per_page > 0 else 0),
         "total_items": total_movies,
     }

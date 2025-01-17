@@ -18,10 +18,10 @@ class MovieDetailResponseSchema(BaseModel):
     revenue: float
     country: str
 
+
 class MovieListResponseSchema(BaseModel):
     movies: List[MovieDetailResponseSchema]
     prev_page: Optional[str] | None
     next_page: Optional[str] | None
     total_pages: int
     total_items: int
-
