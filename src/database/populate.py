@@ -5,6 +5,7 @@ from tqdm import tqdm
 
 from src.config.settings import get_settings
 from src.database.models import MovieModel, get_db_contextmanager
+from src.database.session import DATABASE_URL
 
 
 class CSVDatabaseSeeder:
@@ -65,7 +66,7 @@ class CSVDatabaseSeeder:
 
 def main():
     settings = get_settings()
-    with get_db_contextmanager() as db_session:
+    with get_db_contextmanager(DATABASE_URL) as db_session:
         seeder = CSVDatabaseSeeder(settings.PATH_TO_MOVIES_CSV, db_session)
 
         if not seeder.is_db_populated():
