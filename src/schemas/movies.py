@@ -3,6 +3,7 @@ import datetime
 from pydantic import BaseModel
 from typing import List, Optional
 
+
 class MovieDetailResponseSchema(BaseModel):
     id: int
     name: str
@@ -17,6 +18,7 @@ class MovieDetailResponseSchema(BaseModel):
     budget: float
     revenue: float
     country: str
+
 
 class MovieListResponseSchema(BaseModel):
     movies: List[MovieDetailResponseSchema]
