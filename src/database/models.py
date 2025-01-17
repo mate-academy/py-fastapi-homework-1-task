@@ -6,7 +6,7 @@ from contextlib import contextmanager
 from sqlalchemy import String, Float, Text, DECIMAL, UniqueConstraint, Date
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
 
-DATABASE_URL = "sqlite:///example.db"
+DATABASE_URL = "sqlite:///movies.db"
 engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine)
 
