@@ -1,4 +1,4 @@
-from typing import Annotated, Optional
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.orm import Session
@@ -24,13 +24,13 @@ def get_all_movies(
 
     prev_page = None
     if page > 1:
-        prev_page = str(request.url.include_query_params(page=page - 1, per_page=per_page))
-        # prev_page = f"/theater/movies/?page={page - 1}&per_page={per_page}"
+        # prev_page = str(request.url.include_query_params(page=page - 1, per_page=per_page))
+        prev_page = f"/theater/movies/?page={page - 1}&per_page={per_page}"
 
     next_page = None
     if page < total_pages:
-        next_page = str(request.url.include_query_params(page=page + 1, per_page=per_page))
-        # next_page = f"/theater/movies/?page={page + 1}&per_page={per_page}"
+        # next_page = str(request.url.include_query_params(page=page + 1, per_page=per_page))
+        next_page = f"/theater/movies/?page={page + 1}&per_page={per_page}"
 
     if not films:
         raise HTTPException(status_code=404, detail="No movies found.")
