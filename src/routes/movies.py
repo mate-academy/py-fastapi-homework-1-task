@@ -12,7 +12,7 @@ router = APIRouter()
 @router.get("/movies/", response_model=MovieListResponseSchema)
 def get_all_movies(
         request: Request,
-        page: Annotated[int,Query(ge=1)] = 1,
+        page: Annotated[int, Query(ge=1)] = 1,
         per_page: Annotated[int, Query(ge=1, le=20)] = 10,
         db: Session = Depends(get_db),
 ) -> MovieListResponseSchema:
