@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from typing import List
 from datetime import date
 
+
 class MovieDetailResponseSchema(BaseModel):
     id: int
     name: str
@@ -23,6 +24,6 @@ class MovieDetailResponseSchema(BaseModel):
 class MovieListResponseSchema(BaseModel):
     movies: List[MovieDetailResponseSchema]
     prev_page: str | None = None
-    next_page: str| None = None
+    next_page: str | None = None
     total_pages: int
     total_items: int
