@@ -27,7 +27,10 @@ def get_movies(
             status_code=422,
             detail=[
                 {
-                  "loc": ["query", "page"],
+                  "loc": [
+                      "query",
+                      "page"
+                  ],
                   "msg": "ensure this value is greater than or equal to 1",
                   "type": "value_error.number.not_ge"
                 }
