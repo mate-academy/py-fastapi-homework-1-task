@@ -1,8 +1,14 @@
 import datetime
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
+from contextlib import contextmanager
 
 from sqlalchemy import String, Float, Text, DECIMAL, UniqueConstraint, Date
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
 
+DATABASE_URL = "sqlite:///example.db"
+engine = create_engine(DATABASE_URL)
+Session = sessionmaker(bind=engine)
 
 class Base(DeclarativeBase):
     pass
@@ -31,3 +37,19 @@ class MovieModel(Base):
 
     def __repr__(self):
         return f"<Movie(name='{self.name}', release_date='{self.date}', score={self.score})>"
+
+@contextmanager
+def get_db_contextmanager(self):
+    """
+    Context manager for database sessions.
+    Automatically handles session commit/rollback and closing.
+    """
+    session = Session()
+    try:
+        yield session
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        raise e
+    finally:
+        session.close()
