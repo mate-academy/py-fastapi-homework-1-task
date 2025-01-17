@@ -24,14 +24,15 @@ def get_movies(
         per_page: int = 10,
         db: Session = Depends(get_db)
 ):
-    total_items = db.query(func.count(MovieModel.id)).scalar()
-    total_pages = ceil(total_items / per_page)
 
     if page < 1 or (per_page < 1 or per_page > 20):
         raise HTTPException(
             status_code=422,
             detail=[{"msg": "Input should be greater than or equal to 1"}]
         )
+
+    total_items = db.query(func.count(MovieModel.id)).scalar()
+    total_pages = ceil(total_items / per_page)
 
     if page > total_pages:
         raise HTTPException(
