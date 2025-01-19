@@ -1,7 +1,7 @@
 import math
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from schemas.movies import MoviesSchema, MovieShema
+from schemas.movies import MoviesSchema, MovieSchema
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.annotation import Annotated
@@ -36,11 +36,11 @@ def read_movies(
         prev_page = f"/theater/movies/?page={page - 1}&per_page={per_page}"
 
     next_page = None
-    if page < 20 and total_items > count:
+    if page < total_pages:
         next_page = f"/theater/movies/?page={page + 1}&per_page={per_page}"
 
     movieschemas = [
-        MovieShema(
+        MovieSchema(
             id=movie.id,
             name=movie.name,
             date=movie.date,
@@ -70,11 +70,11 @@ def read_movies(
 def read_movie(
         movie_id: int,
         db: Session = Depends(get_db),
-) -> MovieShema:
+) -> MovieSchema:
     movie = db.query(MovieModel).get(movie_id)
     if not movie:
         raise HTTPException(404, "Movie with the given ID was not found.")
-    return MovieShema(
+    return MovieSchema(
         id=movie.id,
         name=movie.name,
         date=movie.date,

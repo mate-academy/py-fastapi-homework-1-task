@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import DECIMAL
 
 
-class MovieShema(BaseModel):
+class MovieSchema(BaseModel):
     id: int
     name: str = Field(max_length=255)
     date: datetime.date
@@ -21,7 +21,7 @@ class MovieShema(BaseModel):
 
 
 class MoviesSchema(BaseModel):
-    movies: list[MovieShema]
+    movies: list[MovieSchema]
     prev_page: str | None = Field(max_length=255)
     next_page: str | None = Field(max_length=255)
     total_pages: int
