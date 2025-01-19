@@ -23,11 +23,11 @@ class MovieBase(BaseModel):
 
 
 class MovieListResponseSchema(BaseModel):
-    movies: Optional[List[MovieBase]] | None
-    prev_page: Optional[str] | None
-    next_page: Optional[str] | None
-    total_pages: Optional[int] | None
-    total_items: Optional[int] | None
+    movies: Optional[List[MovieBase]] = None
+    prev_page: Optional[str] = None
+    next_page: Optional[str] = None
+    total_pages: Optional[int] = None
+    total_items: Optional[int] = None
 
 
 class MovieDetailResponseSchema(MovieBase):
