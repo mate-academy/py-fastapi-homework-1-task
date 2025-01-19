@@ -8,13 +8,12 @@ from schemas.movies import MovieListResponseSchema, MovieDetailResponseSchema
 router = APIRouter()
 
 
-@router.get("/example/")
-def example_route(db: Session = Depends(get_db)):
-    return db
-
-
 @router.get("/movies/", response_model=MovieListResponseSchema)
-def get_movies(db: Session = Depends(get_db), page: int = 1, per_page: int = 10):
+def get_movies(
+        db: Session = Depends(get_db),
+        page: int = 1,
+        per_page: int = 10
+):
     # Calculate offset for pagination
     offset = (page - 1) * per_page
     # Fetch paginated movies and total count
