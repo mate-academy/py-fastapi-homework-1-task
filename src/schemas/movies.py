@@ -1,3 +1,5 @@
+import datetime
+
 from pydantic import BaseModel
 from typing import List, Optional
 
@@ -5,7 +7,7 @@ from typing import List, Optional
 class MovieDetailResponseSchema(BaseModel):
     id: int
     name: str
-    date: str
+    date: datetime.date
     score: Optional[float]
     genre: Optional[str]
     overview: Optional[str]
@@ -14,17 +16,16 @@ class MovieDetailResponseSchema(BaseModel):
     status: Optional[str]
     orig_lang: Optional[str]
     budget: Optional[int]
-    revenue: Optional[int]
+    revenue: Optional[float]
     country: Optional[str]
 
     class Config:
-        orm_mode = True  # Для интеграции с SQLAlchemy ORM
+        from_attributes: True
 
 
 class MovieListResponseSchema(BaseModel):
-    movies: List[MovieDetailResponseSchema]  # Список фильмов
-    prev_page: Optional[str]  # URL на предыдущую страницу
-    next_page: Optional[str]  # URL на следующую страницу
-    total_pages: int  # Общее количество страниц
-    total_items: int  # Общее количество элементов
-
+    movies: List[MovieDetailResponseSchema]
+    prev_page: Optional[str]
+    next_page: Optional[str]
+    total_pages: int
+    total_items: int
