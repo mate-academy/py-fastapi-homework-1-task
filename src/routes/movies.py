@@ -24,6 +24,7 @@ def get_movies(
 
     prev_page = None
     next_page = None
+
     if page > 1:
         prev_page = f"/theater/movies/?page={page - 1}&per_page={per_page}"
     if page < total_pages:
