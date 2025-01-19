@@ -9,7 +9,7 @@ from src.schemas.movies import (
     MovieListResponseSchema,
     MovieDetailResponseSchema,
 )
-
+# success
 
 router = APIRouter()
 
