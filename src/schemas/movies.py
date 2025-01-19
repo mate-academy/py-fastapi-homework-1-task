@@ -18,10 +18,11 @@ class MovieDetailResponseSchema(BaseModel):
     budget: float
     revenue: float
     country: str
-    
+
     class Config:
         orm_mode = True
         from_attributes = True
+
 
 class MovieListResponseSchema(BaseModel):
     movies: list[MovieDetailResponseSchema]
