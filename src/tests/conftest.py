@@ -2,12 +2,9 @@ import pytest
 from fastapi.testclient import TestClient
 
 from config import get_settings
-from database import (
-    reset_sqlite_database,
-    get_db_contextmanager,
-)
-from database.populate import CSVDatabaseSeeder
 from main import app
+from src.database import get_db_contextmanager, reset_sqlite_database
+from src.database.populate import CSVDatabaseSeeder
 
 
 @pytest.fixture(scope="function", autouse=True)

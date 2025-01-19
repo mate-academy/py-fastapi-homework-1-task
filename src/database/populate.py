@@ -1,10 +1,10 @@
 import pandas as pd
-from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
 from tqdm import tqdm
 
-from config import get_settings
-from database import MovieModel, get_db_contextmanager
+from src.config import get_settings
+from src.database import MovieModel, get_db_contextmanager
 
 
 class CSVDatabaseSeeder:
