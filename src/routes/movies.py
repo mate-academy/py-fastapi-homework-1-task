@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from database import MovieModel, get_db
 from schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
 
+
 router = APIRouter()
 
 @router.get("/movies/", response_model=MovieListResponseSchema)
