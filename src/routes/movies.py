@@ -1,4 +1,3 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.orm import Session
@@ -6,7 +5,10 @@ from sqlalchemy.orm import Session
 from database import get_db, MovieModel
 from schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
 
+
 router = APIRouter()
+
+
 @router.get("/movies/", response_model=MovieListResponseSchema)
 def get_all_movies(
         request: Request,
