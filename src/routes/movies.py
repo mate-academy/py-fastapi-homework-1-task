@@ -16,10 +16,10 @@ def get_movies(
     total_items = db.query(MovieModel).count()
     total_pages = (total_items + per_page - 1) // per_page
 
-    if not total_items:
-        raise HTTPException(status_code=404, detail="No movies found")
-
     movies = db.query(MovieModel).offset((page - 1) * per_page).limit(per_page).all()
+
+    if not movies:
+        raise HTTPException(status_code=404, detail="No movies found.")
 
     prev_page = f"/theater/movies/?page={page - 1}&per_page={per_page}" if page > 1 else None
     next_page = f"/theater/movies/?page={page + 1}&per_page={per_page}" if page < total_pages else None
@@ -38,6 +38,6 @@ def get_movie(movie_id: int, db: Session = Depends(get_db)):
     movie = db.query(MovieModel).filter(MovieModel.id == movie_id).first()
 
     if not movie:
-        raise HTTPException(status_code=404, detail="Movie not found")
+        raise HTTPException(status_code=404, detail="Movie with the given ID was not found.")
 
     return movie
