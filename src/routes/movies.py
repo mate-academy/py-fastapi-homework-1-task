@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy.orm import Session
 
-from database import MovieModel, get_db
+from database import get_db, MovieModel
 from schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
 
 
@@ -10,39 +11,49 @@ router = APIRouter()
 
 
 @router.get("/movies/", response_model=MovieListResponseSchema)
-def get_movies(
-    page: int = Query(1, ge=1, description="Page number"),
-    per_page: int = Query(10, ge=1, le=20, description="Number of movies per page"),
-    db: Session = Depends(get_db),
+def get_all_movies(
+        request: Request,
+        page: Annotated[int, Query(ge=1)] = 1,
+        per_page: Annotated[int, Query(ge=1, le=20)] = 10,
+        db: Session = Depends(get_db),
 ) -> MovieListResponseSchema:
-    """Get a paginated list of movies."""
-    total_movies = db.query(MovieModel).count()
-    total_pages = (total_movies + per_page - 1) // per_page
+    start = (page - 1) * per_page
+    films = db.query(MovieModel).offset(start).limit(per_page).all()
 
-    offset = (page - 1) * per_page
+    total_items = db.query(MovieModel).count()
+    total_pages = (total_items + per_page - 1) // per_page
 
-    movies = db.execute(select(MovieModel).offset(offset).limit(per_page)).scalars().all()
+    prev_page = None
+    if page > 1:
+        prev_page = f"/theater/movies/?page={page - 1}&per_page={per_page}"
 
-    if not movies:
+    next_page = None
+    if page < total_pages:
+        next_page = f"/theater/movies/?page={page + 1}&per_page={per_page}"
+
+    if not films:
         raise HTTPException(status_code=404, detail="No movies found.")
 
-    base_url = "/movies/"
-    prev_page = f"{base_url}?page={page - 1}&per_page={per_page}" if page > 1 else None
-    next_page = f"{base_url}?page={page + 1}&per_page={per_page}" if page < total_pages else None
-
     return MovieListResponseSchema(
-        movies=[MovieDetailResponseSchema.from_orm(movie) for movie in movies],
+        movies=films,
         prev_page=prev_page,
         next_page=next_page,
         total_pages=total_pages,
-        total_items=total_movies,
+        total_items=total_items,
     )
 
 
-@router.get("/movies/{movie_id}", response_model=MovieDetailResponseSchema)
-def get_movie_by_id(movie_id: int, db: Session = Depends(get_db)) -> MovieDetailResponseSchema:
-    """Get detailed information about a movie by its ID."""
-    movie = db.query(MovieModel).filter(MovieModel.id == movie_id).first()
-    if not movie:
-        raise HTTPException(status_code=404, detail="Movie with the given ID was not found.")
-    return MovieDetailResponseSchema.from_orm(movie)
+@router.get("/movies/{movies_id}/", response_model=MovieDetailResponseSchema)
+def get_single_movie(
+        movies_id: int,
+        db: Session = Depends(get_db)
+) -> MovieDetailResponseSchema:
+    film = db.get(MovieModel, movies_id)
+
+    if not film:
+        raise HTTPException(
+            status_code=404,
+            detail="Movie with the given ID was not found.",
+        )
+
+    return film

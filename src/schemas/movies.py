@@ -1,12 +1,13 @@
-from datetime import date
-from pydantic import BaseModel
+import datetime
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict
 
 
-class MovieBase(BaseModel):
-    """Base model for movie data with all common fields."""
-
+class MovieDetailResponseSchema(BaseModel):
+    id: int
     name: str
-    date: date
+    date: datetime.date
     score: float
     genre: str
     overview: str
@@ -18,22 +19,12 @@ class MovieBase(BaseModel):
     revenue: float
     country: str
 
-    model_config = {"orm_mode": True}
-
-
-class MovieDetailResponseSchema(MovieBase):
-    """Schema for detailed movie response, includes all fields from MovieBase plus ID."""
-
-    id: int
+    model_config = ConfigDict(from_attributes=True)
 
 
 class MovieListResponseSchema(BaseModel):
-    """Schema for paginated list of movies response."""
-
     movies: list[MovieDetailResponseSchema]
-    prev_page: str | None
-    next_page: str | None
+    prev_page: Optional[str]
+    next_page: Optional[str]
     total_pages: int
     total_items: int
-
-    model_config = {"orm_mode": True}
