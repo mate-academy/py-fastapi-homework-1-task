@@ -8,6 +8,7 @@ from schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
 
 router = APIRouter()
 
+
 @router.get("/movies/", response_model=MovieListResponseSchema)
 def get_movies(
     page: int = Query(1, ge=1, description="Page number"),
@@ -36,6 +37,7 @@ def get_movies(
         total_pages=total_pages,
         total_items=total_movies,
     )
+
 
 @router.get("/movies/{movie_id}", response_model=MovieDetailResponseSchema)
 def get_movie_by_id(movie_id: int, db: Session = Depends(get_db)) -> MovieDetailResponseSchema:
