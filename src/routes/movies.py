@@ -5,9 +5,7 @@ from sqlalchemy.orm import Session
 from database import MovieModel, get_db
 from schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
 
-
 router = APIRouter()
-
 
 @router.get("/movies/", response_model=MovieListResponseSchema)
 def get_movies(
@@ -26,18 +24,17 @@ def get_movies(
     if not movies:
         raise HTTPException(status_code=404, detail="No movies found.")
 
-    base_url = "/theater/movies/"
+    base_url = "/movies/"
     prev_page = f"{base_url}?page={page - 1}&per_page={per_page}" if page > 1 else None
     next_page = f"{base_url}?page={page + 1}&per_page={per_page}" if page < total_pages else None
 
     return MovieListResponseSchema(
-        movies=[MovieDetailResponseSchema.model_validate(movie) for movie in movies],
+        movies=[MovieDetailResponseSchema.from_orm(movie) for movie in movies],
         prev_page=prev_page,
         next_page=next_page,
         total_pages=total_pages,
         total_items=total_movies,
     )
-
 
 @router.get("/movies/{movie_id}", response_model=MovieDetailResponseSchema)
 def get_movie_by_id(movie_id: int, db: Session = Depends(get_db)) -> MovieDetailResponseSchema:
@@ -45,4 +42,4 @@ def get_movie_by_id(movie_id: int, db: Session = Depends(get_db)) -> MovieDetail
     movie = db.query(MovieModel).filter(MovieModel.id == movie_id).first()
     if not movie:
         raise HTTPException(status_code=404, detail="Movie with the given ID was not found.")
-    return MovieDetailResponseSchema.model_validate(movie)
+    return MovieDetailResponseSchema.from_orm(movie)

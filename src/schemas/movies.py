@@ -1,5 +1,4 @@
 from datetime import date
-
 from pydantic import BaseModel
 
 
@@ -19,7 +18,7 @@ class MovieBase(BaseModel):
     revenue: float
     country: str
 
-    model_config = {"from_attributes": True}
+    model_config = {"orm_mode": True}
 
 
 class MovieDetailResponseSchema(MovieBase):
@@ -36,3 +35,5 @@ class MovieListResponseSchema(BaseModel):
     next_page: str | None
     total_pages: int
     total_items: int
+
+    model_config = {"orm_mode": True}
