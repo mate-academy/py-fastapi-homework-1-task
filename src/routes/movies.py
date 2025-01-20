@@ -31,6 +31,8 @@ def get_movies(
         total_pages=total_pages,
         total_items=total_items,
     )
+
+
 @router.get("/movies/{movie_id}", response_model=MovieDetailResponseSchema)
 def get_movie_by_id(movie_id: int, db: Session = Depends(get_db)):
     movie = db.query(MovieModel).filter(MovieModel.id == movie_id).first()
