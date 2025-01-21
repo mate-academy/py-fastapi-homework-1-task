@@ -3,8 +3,9 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from tqdm import tqdm
 
-from config import get_settings
-from database import MovieModel, get_db_contextmanager
+from src.config.settings import get_settings
+from .models import MovieModel
+from .session import get_db_contextmanager
 
 
 class CSVDatabaseSeeder:
