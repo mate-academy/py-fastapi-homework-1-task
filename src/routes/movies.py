@@ -7,11 +7,12 @@ from schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
 
 router = APIRouter()
 
+
 @router.get("/movies/", response_model=MovieListResponseSchema)
 def get_movies(
-    page: int = Query(1, ge=1),
-    per_page: int = Query(10, ge=1, le=20),
-    db: Session = Depends(get_db)
+        page: int = Query(1, ge=1),
+        per_page: int = Query(10, ge=1, le=20),
+        db: Session = Depends(get_db)
 ):
     offset = (page - 1) * per_page
     movies_query = db.query(MovieModel).offset(offset).limit(per_page).all()
@@ -40,8 +41,8 @@ def get_movies(
         for movie in movies_query
     ]
 
-    prev_page = f"/theater/movies/?page={page-1}&per_page={per_page}" if page > 1 else None
-    next_page = f"/theater/movies/?page={page+1}&per_page={per_page}" if page < total_pages else None
+    prev_page = f"/theater/movies/?page={page - 1}&per_page={per_page}" if page > 1 else None
+    next_page = f"/theater/movies/?page={page + 1}&per_page={per_page}" if page < total_pages else None
 
     return MovieListResponseSchema(
         movies=movies,
