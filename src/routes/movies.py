@@ -1,5 +1,4 @@
 from math import ceil
-
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
@@ -19,7 +18,7 @@ def movies(
     skip = (page - 1) * per_page
     limit = per_page
 
-    films = db.query(MovieModel).offset(skip).limit(limit=limit).all()
+    films = db.query(MovieModel).offset(skip).limit(limit).all()
 
     if not films:
         raise HTTPException(status_code=404, detail="No movies found.")
@@ -27,8 +26,10 @@ def movies(
     total_items = db.query(MovieModel).count()
     total_pages = ceil(total_items / per_page)
 
-    prev_page = f"/theater/movies/?page={page - 1}&per_page={per_page}" if page > 1 else None
-    next_page = f"/theater/movies/?page={page + 1}&per_page={per_page}" if page < total_pages else None
+    root = "/theater"
+
+    prev_page = f"{root}/movies/?page={page - 1}&per_page={per_page}" if page > 1 else None
+    next_page = f"{root}/movies/?page={page + 1}&per_page={per_page}" if page < total_pages else None
 
     return MovieListResponseSchema(
         movies=films,
