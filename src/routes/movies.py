@@ -23,7 +23,9 @@ def get_movies(
     total_pages = (total_items + per_page - 1) // per_page
     if page > total_pages:
         raise HTTPException(status_code=422,
-                            detail=[{"loc": ["query", "page"], "msg": "Page exceeds total pages", "type": "value_error"}],)
+                            detail=[{"loc": ["query", "page"],
+                                     "msg": "Page exceeds total pages",
+                                     "type": "value_error"}],)
 
     offset = (page - 1) * per_page
     movies = db.query(MovieModel).offset(offset).limit(per_page).all()
