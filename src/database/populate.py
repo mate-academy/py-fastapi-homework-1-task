@@ -17,13 +17,15 @@ class CSVDatabaseSeeder:
 
     def _preprocess_csv(self):
         data = pd.read_csv(self._csv_file_path)
-        data = data.drop_duplicates(subset=['names', 'date_x'], keep='first')
-        data['crew'] = data['crew'].fillna('Unknown')
-        data['genre'] = data['genre'].fillna('Unknown')
-        data['genre'] = data['genre'].str.replace('\u00A0', '', regex=True)
-        data['date_x'] = data['date_x'].str.strip()
-        data['date_x'] = pd.to_datetime(data['date_x'], format='%m/%d/%Y', errors='raise')
-        data['date_x'] = data['date_x'].dt.date
+        data = data.drop_duplicates(subset=["names", "date_x"], keep="first")
+        data["crew"] = data["crew"].fillna("Unknown")
+        data["genre"] = data["genre"].fillna("Unknown")
+        data["genre"] = data["genre"].str.replace("\u00A0", "", regex=True)
+        data["date_x"] = data["date_x"].str.strip()
+        data["date_x"] = pd.to_datetime(
+            data["date_x"], format="%m/%d/%Y", errors="raise"
+        )
+        data["date_x"] = data["date_x"].dt.date
         print("Preprocessing csv file")
 
     def seed(self):
@@ -35,24 +37,26 @@ class CSVDatabaseSeeder:
             self._preprocess_csv()
 
             data = pd.read_csv(self._csv_file_path)
-            data['date_x'] = pd.to_datetime(data['date_x']).dt.date
+            data["date_x"] = pd.to_datetime(data["date_x"]).dt.date
 
             with self._db_session.begin():
-                for _, row in tqdm(data.iterrows(), total=data.shape[0], desc="Seeding database"):
+                for _, row in tqdm(
+                    data.iterrows(), total=data.shape[0], desc="Seeding database"
+                ):
 
                     movie = MovieModel(
-                        name=row['names'],
-                        date=row['date_x'],
-                        score=float(row['score']),
-                        genre=row['genre'],
-                        overview=row['overview'],
-                        crew=row['crew'],
-                        orig_title=row['orig_title'],
-                        status=row['status'],
-                        orig_lang=row['orig_lang'],
-                        budget=float(row['budget_x']),
-                        revenue=float(row['revenue']),
-                        country=row['country']
+                        name=row["names"],
+                        date=row["date_x"],
+                        score=float(row["score"]),
+                        genre=row["genre"],
+                        overview=row["overview"],
+                        crew=row["crew"],
+                        orig_title=row["orig_title"],
+                        status=row["status"],
+                        orig_lang=row["orig_lang"],
+                        budget=float(row["budget_x"]),
+                        revenue=float(row["revenue"]),
+                        country=row["country"],
                     )
                     self._db_session.add(movie)
         except SQLAlchemyError as e:
