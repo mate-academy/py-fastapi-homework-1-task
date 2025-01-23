@@ -17,10 +17,6 @@ def get_movies(
     per_page: int = Query(10, ge=1, le=20, description="Page size"),
     db: Session = Depends(get_db),
 ):
-    if per_page < 1:
-        per_page = 1
-    if per_page > 20:
-        per_page = 20
     first_movie: int = (page - 1) * per_page
     movies = db.query(MovieModel).offset(first_movie).limit(per_page).all()
     if not movies:
