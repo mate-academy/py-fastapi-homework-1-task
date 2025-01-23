@@ -25,8 +25,8 @@ def get_movies(
         raise HTTPException(status_code=404, detail="No movies found.")
 
     prev_page = f"/theater/movies/?page={max(1, page - 1)}&per_page={per_page}" if page > 1 else None
-    next_page = f"/theater/movies/?page={min(total_pages, page + 1)}&per_page={per_page}"\
-        if page < total_pages else None
+    next_page = (f"/theater/movies/?page={min(total_pages, page + 1)}"
+                 f"&per_page={per_page}") if page < total_pages else None
 
     return {
         "movies": movies,
