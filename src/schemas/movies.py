@@ -16,9 +16,8 @@ class PagedResponseSchema(PageParams, Generic[T]):
     movies: List[T]
     total_pages: int
     total_items: int
-    prev_page: str | None = None
-    next_page: str | None = None
-    next_page: str
+    prev_page: Optional[str]
+    next_page: Optional[str]
 
     class Config:
         from_attributes = True
