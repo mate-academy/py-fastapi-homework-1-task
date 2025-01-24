@@ -16,12 +16,16 @@ def movie_router(movie_id: int, db: Session = Depends(get_db)):
     movie = db.query(MovieModel).filter(MovieModel.id == movie_id).first()
 
     if not movie:
-        raise HTTPException(status_code=404, detail="Movie with the given ID was not found."
-)
+        raise HTTPException(
+            status_code=404,
+            detail="Movie with the given ID was not found.")
     return movie
 
 
-@router.get("/movies/", response_model=PagedResponseSchema[MovieDetailResponseSchema])
+@router.get(
+    "/movies/",
+    response_model=PagedResponseSchema[MovieDetailResponseSchema]
+)
 def movies_list_router(
         request: Request,
         page_params: PageParams = Depends(),

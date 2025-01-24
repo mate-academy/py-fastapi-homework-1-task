@@ -1,10 +1,9 @@
 # Write your code here
 from datetime import date
-from decimal import Decimal
 from typing import TypeVar, Generic, List, Optional
 
 from fastapi import HTTPException
-from pydantic import BaseModel, conint
+from pydantic import BaseModel, conint, ConfigDict
 
 T = TypeVar("T")
 
@@ -20,17 +19,21 @@ class PagedResponseSchema(PageParams, Generic[T]):
     total_items: int
     prev_page: Optional[str]
     next_page: Optional[str]
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
-def paginate(page_params: PageParams, query, ResponseSchema: BaseModel) -> PagedResponseSchema[T]:
+def paginate(
+        page_params: PageParams,
+        query, ResponseSchema: BaseModel
+) -> PagedResponseSchema[T]:
 
-    paginated_query = query.offset((page_params.page - 1) * page_params.per_page).limit(page_params.per_page).all()
+    paginated_query = query.offset(
+        (page_params.page - 1) * page_params.per_page
+    ).limit(page_params.per_page).all()
 
     prev_page = (
-        f"/theater/movies/?page={page_params.page - 1}&per_page={page_params.per_page}"
+        f"/theater/movies/?page={page_params.page - 1}"
+        f"&per_page={page_params.per_page}"
         if page_params.page > 1
         else None
     )
@@ -41,7 +44,8 @@ def paginate(page_params: PageParams, query, ResponseSchema: BaseModel) -> Paged
         raise HTTPException(status_code=404, detail="No movies found.")
 
     next_page = (
-        f"/theater/movies/?page={page_params.page + 1}&per_page={page_params.per_page}"
+        f"/theater/movies/?page={page_params.page + 1}"
+        f"&per_page={page_params.per_page}"
         if page_params.page < total_pages
         else None
     )
@@ -49,7 +53,9 @@ def paginate(page_params: PageParams, query, ResponseSchema: BaseModel) -> Paged
     return PagedResponseSchema(
         total_items=query.count(),
         total_pages=total_pages,
-        movies=[ResponseSchema.from_orm(item) for item in paginated_query],
+        movies=[
+            ResponseSchema.model_validate(item) for item in paginated_query
+        ],
         prev_page=prev_page,
         next_page=next_page,
     )
@@ -66,15 +72,13 @@ class MovieDetailBase(BaseModel):
     orig_title: str
     status: str
     orig_lang: str
-    budget: Decimal
+    budget: float
     revenue: float
     country: str
 
 
 class MovieDetailResponseSchema(MovieDetailBase):
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class MovieListResponseSchema(BaseModel):
