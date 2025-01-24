@@ -2,21 +2,21 @@
 from datetime import date
 from typing import TypeVar, Generic, List, Optional
 
-from pydantic import BaseModel   #conint, GenericModel
+from pydantic import BaseModel, conint
 
 T = TypeVar("T")
 
 
-# class PageParams(BaseModel):
-#     page: conint(ge=1) = 1
-#     per_page: conint(ge=1, le=20) = 10
-#
-#
-# class PagedResponseSchema(GenericModel, Generic[T]):
-#     total: int
-#     page: int
-#     size: int
-#     results: List[T]
+class PageParams(BaseModel):
+    page: conint(ge=1) = 1
+    per_page: conint(ge=1, le=20) = 10
+
+
+class PagedResponseSchema(PageParams, Generic[T]):
+    total: int
+    page: int
+    size: int
+    results: List[T]
 
 
 class MovieDetailBase(BaseModel):
