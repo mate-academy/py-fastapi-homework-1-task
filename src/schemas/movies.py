@@ -13,10 +13,42 @@ class PageParams(BaseModel):
 
 
 class PagedResponseSchema(PageParams, Generic[T]):
-    total: int
-    page: int
-    size: int
-    results: List[T]
+    movies: List[T]
+    total_pages: int
+    total_items: int
+    prev_page: str | None = None
+    next_page: str | None = None
+    next_page: str
+
+    class Config:
+        from_attributes = True
+
+
+def paginate(page_params: PageParams, query, ResponseSchema: BaseModel) -> PagedResponseSchema[T]:
+
+    paginated_query = query.offset((page_params.page - 1) * page_params.per_page).limit(page_params.per_page).all()
+
+    prev_page = (
+        f"/theater/movies/?page={page_params.page - 1}&per_page={page_params.per_page}"
+        if page_params.page > 1
+        else None
+    )
+
+    total_pages = int(round(query.count() / page_params.per_page))
+
+    next_page = (
+        f"/theater/movies/?page={page_params.page + 1}&per_page={page_params.per_page}"
+        if page_params.page < total_pages
+        else None
+    )
+
+    return PagedResponseSchema(
+        total_items=query.count(),
+        total_pages=total_pages,
+        movies=[ResponseSchema.from_orm(item) for item in paginated_query],
+        prev_page=prev_page,
+        next_page=next_page,
+    )
 
 
 class MovieDetailBase(BaseModel):
