@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from database.models import MovieModel
 from database.session import get_db
-from schemas.movies import MovieDetailResponseSchema
+from schemas.movies import MovieDetailResponseSchema, PagedResponseSchema
+
+from schemas.movies import PageParams, paginate
 
 router = APIRouter()
 
@@ -19,7 +21,12 @@ def movie_router(movie_id: int, db: Session = Depends(get_db)):
     return movie
 
 
+@router.get("/movies/", response_model=PagedResponseSchema[MovieDetailResponseSchema])
+def movies_list_router(
+        request: Request,
+        page_params: PageParams = Depends(),
+        db: Session = Depends(get_db)
+):
+    query = db.query(MovieModel)
 
-#PAGINATION
-# @router.get("/movies/{film_id}", response_model=PagedResponseSchema[MovieDetailResponseSchema])
-
+    return paginate(page_params, query, MovieDetailResponseSchema)
