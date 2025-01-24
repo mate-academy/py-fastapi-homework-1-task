@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from src.database.models import MovieModel
-from src.database.session import get_db
-from src.schemas.movies import MovieDetailResponseSchema
+from database.models import MovieModel
+from database.session import get_db
+from schemas.movies import MovieDetailResponseSchema
 
 router = APIRouter()
 
@@ -14,5 +14,12 @@ def movie_router(movie_id: int, db: Session = Depends(get_db)):
     movie = db.query(MovieModel).filter(MovieModel.id == movie_id).first()
 
     if not movie:
-        raise HTTPException(status_code=404, detail="No movies found.")
+        raise HTTPException(status_code=404, detail="Movie with the given ID was not found."
+)
     return movie
+
+
+
+#PAGINATION
+# @router.get("/movies/{film_id}", response_model=PagedResponseSchema[MovieDetailResponseSchema])
+

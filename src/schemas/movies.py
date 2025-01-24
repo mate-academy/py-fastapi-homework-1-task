@@ -1,31 +1,41 @@
 # Write your code here
-from datetime import datetime
+from datetime import date
 from typing import TypeVar, Generic, List, Optional
 
-from pydantic import BaseModel, conint, GenericModel
+from pydantic import BaseModel   #conint, GenericModel
 
 T = TypeVar("T")
 
 
-class PageParams(BaseModel):
-    page: conint(ge=1) = 1
-    per_page: conint(ge=1, le=20) = 10
-
-
-class PagedResponseSchema(GenericModel, Generic[T]):
-    total: int
-    page: int
-    size: int
-    results: List[T]
+# class PageParams(BaseModel):
+#     page: conint(ge=1) = 1
+#     per_page: conint(ge=1, le=20) = 10
+#
+#
+# class PagedResponseSchema(GenericModel, Generic[T]):
+#     total: int
+#     page: int
+#     size: int
+#     results: List[T]
 
 
 class MovieDetailBase(BaseModel):
+    id: int
     name: str
-    date: datetime.date
+    date: date
+    score: int
+    genre: str
+    overview: str
+    crew: str
+    orig_title: str
+    status: str
+    orig_lang: str
+    budget: int
+    revenue: int
+    country: str
 
 
 class MovieDetailResponseSchema(MovieDetailBase):
-    id: int
 
     class Config:
         from_attributes = True
@@ -37,4 +47,3 @@ class MovieListResponseSchema(BaseModel):
     next_page: Optional[str]
     total_pages: int
     total_items: int
-
