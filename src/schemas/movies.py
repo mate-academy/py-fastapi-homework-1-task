@@ -1,7 +1,9 @@
 # Write your code here
 from datetime import date
+from decimal import Decimal
 from typing import TypeVar, Generic, List, Optional
 
+from fastapi import HTTPException
 from pydantic import BaseModel, conint
 
 T = TypeVar("T")
@@ -35,6 +37,9 @@ def paginate(page_params: PageParams, query, ResponseSchema: BaseModel) -> Paged
 
     total_pages = int(round(query.count() / page_params.per_page))
 
+    if page_params.page > total_pages or query.count() == 0:
+        raise HTTPException(status_code=404, detail="No movies found.")
+
     next_page = (
         f"/theater/movies/?page={page_params.page + 1}&per_page={page_params.per_page}"
         if page_params.page < total_pages
@@ -61,7 +66,7 @@ class MovieDetailBase(BaseModel):
     orig_title: str
     status: str
     orig_lang: str
-    budget: int
+    budget: Decimal
     revenue: float
     country: str
 
