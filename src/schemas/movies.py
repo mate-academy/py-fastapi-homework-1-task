@@ -23,9 +23,9 @@ class MovieDetailBase(BaseModel):
     name: str
     date: datetime.date
 
-    class Config:
-        from_attributes = True
-
 
 class MovieDetailResponseSchema(MovieDetailBase):
     id: int
+
+    class Config:
+        from_attributes = True
