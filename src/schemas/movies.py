@@ -27,3 +27,5 @@ class MovieDetailBase(BaseModel):
         from_attributes = True
 
 
+class MovieDetailResponseSchema(MovieDetailBase):
+    id: int
