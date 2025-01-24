@@ -1,6 +1,6 @@
 # Write your code here
 from datetime import datetime
-from typing import TypeVar, Generic, List
+from typing import TypeVar, Generic, List, Optional
 
 from pydantic import BaseModel, conint, GenericModel
 
@@ -29,3 +29,12 @@ class MovieDetailResponseSchema(MovieDetailBase):
 
     class Config:
         from_attributes = True
+
+
+class MovieListResponseSchema(BaseModel):
+    movies: List[MovieDetailResponseSchema]
+    prev_page: Optional[str]
+    next_page: Optional[str]
+    total_pages: int
+    total_items: int
+
