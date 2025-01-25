@@ -16,7 +16,7 @@ def get_movies_list(
         ),
         db: Session = Depends(get_db)
 ):
-    total_items = db.query(MovieModel).count()
+    total_items = db.query(MovieModel.id).count()
     total_pages = (total_items + per_page - 1) // per_page
 
     movies = (
