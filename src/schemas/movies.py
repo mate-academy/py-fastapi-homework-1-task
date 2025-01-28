@@ -3,6 +3,7 @@ from datetime import date
 from pydantic import BaseModel, validator
 from typing import List, Optional
 
+
 class MovieDetailResponseSchema(BaseModel):
     id: int
     name: str
@@ -26,6 +27,7 @@ class MovieDetailResponseSchema(BaseModel):
         if isinstance(v, date):
             return v.strftime("%Y-%m-%d")
         return v
+
 
 class MovieListResponseSchema(BaseModel):
     movies: List[MovieDetailResponseSchema]
