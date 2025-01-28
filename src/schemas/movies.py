@@ -1,7 +1,7 @@
 from datetime import date
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class MovieDetailResponseSchema(BaseModel):
@@ -19,8 +19,10 @@ class MovieDetailResponseSchema(BaseModel):
     revenue: float
     country: str
 
-    class Config:
-        from_attributes = True
+    # class Config:
+    #     from_attributes = True
+
+    model_config = ConfigDict(from_attributes=True)  # new configuration method
 
 
 class MovieListResponseSchema(BaseModel):
