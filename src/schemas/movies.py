@@ -31,6 +31,5 @@ class MovieListResponseSchema(BaseModel):
     total_items: int
 
 
-
 class MovieDetailResponseSchema(MovieBaseResponseSchema):
     pass

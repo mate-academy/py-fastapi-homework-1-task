@@ -19,7 +19,7 @@ async def get_movies(
 ):
     offset = (page - 1) * per_page
 
-    movies =  db.query(MovieModel).offset(offset).limit(per_page).all()
+    movies = db.query(MovieModel).offset(offset).limit(per_page).all()
 
     if movies:
         total_items = db.query(MovieModel).count()
