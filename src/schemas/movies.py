@@ -1,4 +1,8 @@
-from pydantic import BaseModel
+import datetime
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict
+
 
 class MovieDetailResponseSchema(BaseModel):
     id: int
