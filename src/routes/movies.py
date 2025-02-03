@@ -42,7 +42,7 @@ def get_movies(
     )
 
 
-@router.get("/movie/{movie_id}/", response_model=MovieDetailResponseSchema)
+@router.get("/movies/{movie_id}", response_model=MovieDetailResponseSchema)
 def get_movie(
         movie_id: int,
         db: Session = Depends(get_db)
