@@ -53,4 +53,18 @@ def get_movie(
             status_code=404,
             detail="Movie with the given ID was not found.",
         )
-    return film
+    return MovieDetailResponseSchema(
+        id=film.id,
+        name=film.name,
+        date=film.date,
+        score=film.score,
+        genre=film.genre,
+        overview=film.overview,
+        crew=film.crew,
+        orig_title=film.orig_title,
+        status=film.status,
+        orig_lang=film.orig_lang,
+        budget=film.budget,
+        revenue=film.revenue,
+        country=film.country,
+    )
