@@ -18,8 +18,8 @@ def movies(
         db: Session = Depends(get_db),
         page: Annotated[int, Query(..., title="The page number to fetch", ge=1)] = 1,
         per_page: Annotated[int, Query(
-            ...,title="Number of movies to fetch per page", ge=1, le=20
-        )]  = 10
+            ..., title="Number of movies to fetch per page", ge=1, le=20
+        )] = 10
 ) -> Dict[str, Union[List[MovieListResponseSchema], Optional[str], int]]:
 
     data = db.query(MovieModel).all()
