@@ -2,7 +2,7 @@ import random
 
 import pytest
 
-from database import MovieModel
+from src.database.models import MovieModel
 
 
 def test_get_movies_empty_database(client):
