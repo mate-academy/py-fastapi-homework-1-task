@@ -14,20 +14,23 @@ from src.schemas.movies import MovieBase, MovieDetailResponseSchema, MovieListRe
 router = APIRouter()
 
 
-@router.get("/movies/", response_model=Page[MovieListResponseSchema])
-def get_empty_movie(page: int = Query(1, ge=1), size: int = Query(10, ge=1), db: Session = Depends(get_db)):
-    # prev_page = page - 1
-    # next_page = page + 1
-    # total_items = db.query(MovieModel).count()
-    # total_pages = (total_items + size - 1) // size
-    # return JSONResponse(content={
-    #     "prev_page": prev_page,
-    #     "next_page": next_page,
-    #     "total_pages": total_pages,
-    #     "total_items": total_items
-    # }
-    # )
-    return db.query(MovieModel).all()
+@router.get("/movies/", response_model=MovieListResponseSchema)
+def get_empty_movie(db: Session = Depends(get_db)):
+    movies = db.query(MovieModel).all()
+    return {"moviesssss": movies}
+
+# @router.get(page: int = Query(1, ge=1), size: int = Query(10, ge=1))
+# def get_empty_movie(page: int = , size db: Session = Depends(get_db)):
+#     prev_page = page - 1
+#     next_page = page + 1
+#     total_pages = (total_items + size - 1) // size
+#     total_items = db.query(MovieModel).count()
+#     return JSONResponse(content={
+#         "prev_page": prev_page,
+#         "next_page": next_page,
+#         "total_items": total_items,
+#         'total_pages': total_pages,
+#     })
 
 
 @router.get("/movies/{film_id}", response_model=MovieDetailResponseSchema)

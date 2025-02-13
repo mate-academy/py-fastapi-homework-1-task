@@ -1,10 +1,10 @@
 from fastapi_pagination import add_pagination
 
-from src.routes.movies import router
 from src.app import app
+from src.routes.movies import router
 
 
-add_pagination(app)
+# add_pagination(app)
 
 api_version_prefix = "/api/v1"
 
