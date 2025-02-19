@@ -6,8 +6,8 @@ from ..database import get_db, MovieModel
 from ..schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
 
 
-
 router = APIRouter()
+
 
 @router.get("/movies/{movie_id}", response_model=MovieDetailResponseSchema)
 def get_film(movie_id: int, db: Session = Depends(get_db)):
