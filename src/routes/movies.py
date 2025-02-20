@@ -17,7 +17,7 @@ def get_movies(
         per_page: Annotated[int, Query(ge=1, le=20)] = 10,
         db: Session = Depends(get_db)
 ):
-    films = db.query(MovieModel).offset((page - 1) * per_page).limit(per_page)
+    films = db.query(MovieModel).offset((page - 1) * per_page).limit(per_page).all()
     total_items = db.query(MovieModel).count()
     total_pages = math.ceil(total_items / per_page)
     if page > total_pages:
