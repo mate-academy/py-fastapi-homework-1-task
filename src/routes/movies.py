@@ -22,8 +22,8 @@ def get_movies(
     total_pages = math.ceil(total_items / per_page)
     if page > total_pages:
         raise HTTPException(status_code=404, detail="No movies found.")
-    prev_page = f"/theater/movies/?page={page - 1}&per_page={per_page}" if page > 1 else None
-    next_page = f"/theater/movies/?page={page + 1}&per_page={per_page}" if page < total_pages else None
+    prev_page = f"/movies/?page={page - 1}&per_page={per_page}" if page > 1 else None
+    next_page = f"/movies/?page={page + 1}&per_page={per_page}" if page < total_pages else None
     return {
         "movies": films,
         "prev_page": prev_page,
