@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from typing import Generator
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
@@ -19,7 +20,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=connection)
 Base.metadata.create_all(bind=engine)
 
 
-def get_db() -> Session:
+def get_db() -> Generator[Session, None, None]:
     db = SessionLocal()
     try:
         yield db
@@ -28,7 +29,7 @@ def get_db() -> Session:
 
 
 @contextmanager
-def get_db_contextmanager() -> Session:
+def get_db_contextmanager() -> Generator[Session, None, None]:
     db = SessionLocal()
     try:
         yield db
