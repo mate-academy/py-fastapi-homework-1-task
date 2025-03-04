@@ -31,3 +31,5 @@ class MovieModel(Base):
 
     def __repr__(self):
         return f"<Movie(name='{self.name}', release_date='{self.date}', score={self.score})>"
+
+
