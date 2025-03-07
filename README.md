@@ -227,7 +227,7 @@ This setup ensures flexibility, whether you prefer running the project in a cont
 2. Close all open code tabs
 3. Restart `PyCharm`
 4. Create a new Run Configuration for the `FastAPI` project
-    ![create new fastapi run configuration](./assets/images/2_create_new_run_config.png)
+   ![create new fastapi run configuration](./assets/images/2_create_new_run_config.png)
 5. Run the project via `PyCharm` and use breakpoints for debugging
 
 
