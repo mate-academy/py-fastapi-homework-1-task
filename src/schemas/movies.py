@@ -21,7 +21,6 @@ class MovieDetailResponseSchema(BaseModel):
     country: str
 
 
-
 class MovieListResponseSchema(BaseModel):
     movies: list[MovieDetailResponseSchema]
     prev_page: str | None = None
