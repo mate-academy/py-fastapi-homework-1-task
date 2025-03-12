@@ -75,3 +75,15 @@ async def get_movies(
         "prev_page": prev_page,
         "next_page": next_page,
     }
+
+
+@router.get("/movies/{movie_id}/")
+async def get_movie_by_id(movie_id: int, db: AsyncSession = Depends(get_db)):
+    query = select(MovieModel).where(MovieModel.id == movie_id)
+    result = await db.execute(query)
+    movie = result.scalar_one_or_none()
+
+    if movie is None:
+        raise HTTPException(status_code=404, detail="Movie with the given ID was not found.")
+
+    return movie
