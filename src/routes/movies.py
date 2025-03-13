@@ -30,11 +30,13 @@ async def get_movies(
     )
     movie_list = movies.all()
 
-    prev_page = f"{request.base_url}?page={page - 1}&per_page={per_page}" if page > 1 else None
-    next_page = f"{request.base_url}?page={page + 1}&per_page={per_page}" if page < pages else None
+    prev_page = str(
+        request.url_for("get_movies").include_query_params(page=page - 1, per_page=per_page)) if page > 1 else None
+    next_page = str(request.url_for("get_movies").include_query_params(page=page + 1,
+                                                                       per_page=per_page)) if page < pages else None
 
     return {
-        "movies": movie_list,
+        "movies": list(movie_list),
         "prev_page": prev_page,
         "next_page": next_page,
         "total_pages": pages,
