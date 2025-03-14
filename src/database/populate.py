@@ -7,6 +7,10 @@ from tqdm.asyncio import tqdm
 from config import get_settings
 from database import MovieModel, get_db_contextmanager, init_db
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
 
 class CSVDatabaseSeeder:
     """
