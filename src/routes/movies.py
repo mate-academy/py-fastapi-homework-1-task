@@ -29,7 +29,7 @@ async def get_movies(
         raise HTTPException(status_code=404, detail="No movies found.")
 
     return {
-        "movies": [MovieDetailResponseSchema.from_attributes(movie) for movie in movies],
+        "movies": movies,
         "prev_page": (
             f"/movies/?page={page - 1}&per_page={per_page}" if page > 1 else None
         ),
