@@ -1,29 +1,28 @@
 from pydantic import BaseModel
-from typing import List
+
+from datetime import date
+from typing import List, Optional
 
 
 class MovieDetailResponseSchema(BaseModel):
     id: int
     name: str
-    date: str = None
-    score: float = None
-    genre: str = None
-    overview: str = None
-    crew: str = None
-    orig_title: str = None
-    status: str = None
-    orig_lang: str = None
-    budget: int = None
-    revenue: int = None
-    country: str = None
-
-    class Config:
-        from_attributes = True
+    date: date
+    score: float
+    genre: str
+    overview: str
+    crew: str
+    orig_title: str
+    status: str
+    orig_lang: str
+    budget: float
+    revenue: float
+    country: str
 
 
 class MovieListResponseSchema(BaseModel):
-    movies: [MovieDetailResponseSchema]
-    prev_page: int
-    next_page: int
+    movies: List[MovieDetailResponseSchema]
+    prev_page: Optional[str] = None
+    next_page: Optional[str] = None
     total_pages: int
     total_items: int
