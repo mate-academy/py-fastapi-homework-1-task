@@ -25,9 +25,10 @@ class MovieModel(Base):
     revenue: Mapped[float] = mapped_column(Float, nullable=False)
     country: Mapped[str] = mapped_column(String(3), nullable=False)
 
-    __table_args__ = (
-        UniqueConstraint("name", "date", name="unique_movie_constraint"),
-    )
+    __table_args__ = (UniqueConstraint("name", "date", name="unique_movie_constraint"),)
 
     def __repr__(self):
         return f"<Movie(name='{self.name}', release_date='{self.date}', score={self.score})>"
+
+    def as_dict(self):
+        return {col.name: getattr(self, col.name) for col in self.__table__.columns}
