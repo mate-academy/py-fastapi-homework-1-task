@@ -17,6 +17,25 @@ async def get_movies(
         per_page: int = Query(10, ge=1),
         db: AsyncSession = Depends(get_db),
 ) -> dict[str, Any]:
+    """
+    Fetches a list of movies with pagination.
+
+    Args:
+        page (int): The page number, starting from 1. Default is 1.
+        per_page (int): The number of movies per page. The minimum value is 1. Default is 10.
+        db (AsyncSession): The asynchronous session to interact with the database.
+
+    Returns:
+        dict[str, Any]:
+            - movies (list[MovieModel]): A list of movies on the current page.
+            - prev_page (str | None): URL of the previous page (if any).
+            - next_page (str | None): URL of the next page (if any).
+            - total_pages (int): The total number of pages.
+            - total_items (int): The total number of movies in the database.
+
+    Raises:
+        HTTPException: 404 if no movies are found or if the requested page doesn't exist.
+    """
     query = select(MovieModel).offset((page - 1) * per_page).limit(per_page)
     result = await db.execute(query)
     movies = result.scalars().all()
@@ -50,6 +69,19 @@ async def get_movies(
 
 @router.get("/movies/{movie_id}/", response_model=MovieDetailResponseSchema)
 async def get_movie(movie_id: int, db: AsyncSession = Depends(get_db)) -> MovieModel:
+    """
+    Fetches the details of a movie by its ID.
+
+    Args:
+        movie_id (int): The ID of the movie to retrieve.
+        db (AsyncSession): The asynchronous session to interact with the database.
+
+    Returns:
+        MovieModel: The details of the movie.
+
+    Raises:
+        HTTPException: 404 if the movie with the given ID is not found.
+    """
     query = select(MovieModel).where(MovieModel.id == movie_id)
     result = await db.execute(query)
     movie = result.scalars().first()
