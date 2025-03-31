@@ -170,3 +170,9 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+.vscode/settings.json
+.python-version
+.pylintrc
+run.sh
+README.md
+README.md
