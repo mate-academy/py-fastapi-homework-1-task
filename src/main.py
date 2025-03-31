@@ -12,7 +12,6 @@ async def lifespan(app: FastAPI):
     yield
     await close_db()
 
-
 app = FastAPI(
     title="Movies homework",
     description="Description of project",
