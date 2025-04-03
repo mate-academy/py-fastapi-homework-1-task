@@ -3,6 +3,7 @@ from typing import List
 
 from pydantic import BaseModel
 
+
 class MovieDetailResponseSchema(BaseModel):
     id: int
     name: str
