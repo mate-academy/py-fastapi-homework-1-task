@@ -4,8 +4,9 @@ from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
-from config import get_settings
-from database import Base
+from src.config.settings import get_settings
+from src.database import Base
+
 
 settings = get_settings()
 
@@ -13,7 +14,11 @@ DATABASE_URL = f"sqlite+aiosqlite:///{settings.PATH_TO_DB}"
 
 engine = create_async_engine(DATABASE_URL, echo=False)
 
-AsyncSQLiteSessionLocal = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)  # type: ignore
+AsyncSQLiteSessionLocal = sessionmaker(  # type: ignore
+    bind=engine,
+    class_=AsyncSession,
+    expire_on_commit=False
+)
 
 
 async def init_db() -> None:

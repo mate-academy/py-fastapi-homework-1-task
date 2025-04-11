@@ -1,11 +1,11 @@
 import pandas as pd
 from sqlalchemy import select, func
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import AsyncSession
 from tqdm.asyncio import tqdm
 
-from config import get_settings
-from database import MovieModel, get_db_contextmanager, init_db
+from src.config.settings import get_settings
+from src.database import Movie, get_db_contextmanager, init_db
 
 
 class CSVDatabaseSeeder:
@@ -36,8 +36,9 @@ class CSVDatabaseSeeder:
         :return: True if the database contains at least one record, False otherwise.
         :rtype: bool
         """
-        result = await self._db_session.execute(select(func.count()).select_from(MovieModel))
+        result = await self._db_session.execute(select(func.count()).select_from(Movie))
         total_count = result.scalar_one()
+
         return total_count > 0
 
     async def _preprocess_csv(self) -> pd.DataFrame:
@@ -59,6 +60,7 @@ class CSVDatabaseSeeder:
         data['date_x'] = pd.to_datetime(data['date_x'], format='%m/%d/%Y', errors='coerce')
         data['date_x'] = data['date_x'].dt.date
         print("Preprocessing csv file")
+
         return data
 
     async def seed(self) -> None:
@@ -80,7 +82,7 @@ class CSVDatabaseSeeder:
 
             async with self._db_session.begin():
                 for _, row in tqdm(data.iterrows(), total=data.shape[0], desc="Seeding database"):
-                    movie = MovieModel(
+                    movie = Movie(
                         name=row['names'],
                         date=row['date_x'],
                         score=float(row['score']),
