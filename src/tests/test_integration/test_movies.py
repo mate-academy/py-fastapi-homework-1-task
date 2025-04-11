@@ -2,7 +2,7 @@ import random
 import pytest
 from sqlalchemy import select, func
 
-from database import MovieModel
+from database import Movie
 
 
 @pytest.mark.asyncio
@@ -118,7 +118,7 @@ async def test_page_exceeds_maximum(client, db_session, seed_database):
         - JSON response with a "No movies found." error.
     """
     per_page = 10
-    total_movies = await db_session.scalar(select(func.count()).select_from(MovieModel))
+    total_movies = await db_session.scalar(select(func.count()).select_from(Movie))
     max_page = (total_movies + per_page - 1) // per_page
 
     response = await client.get(f"/api/v1/theater/movies/?page={max_page + 1}&per_page={per_page}")
@@ -150,11 +150,11 @@ async def test_get_movie_by_id_valid(client, db_session, seed_database):
         - 200 response status code.
         - JSON response containing the correct movie details.
     """
-    min_id = (await db_session.execute(select(MovieModel.id).order_by(MovieModel.id.asc()))).scalars().first()
-    max_id = (await db_session.execute(select(MovieModel.id).order_by(MovieModel.id.desc()))).scalars().first()
+    min_id = (await db_session.execute(select(Movie.id).order_by(Movie.id.asc()))).scalars().first()
+    max_id = (await db_session.execute(select(Movie.id).order_by(Movie.id.desc()))).scalars().first()
     random_id = random.randint(min_id, max_id)
 
-    expected_movie = await db_session.get(MovieModel, random_id)
+    expected_movie = await db_session.get(Movie, random_id)
     assert expected_movie is not None
 
     response = await client.get(f"/api/v1/theater/movies/{random_id}/")
