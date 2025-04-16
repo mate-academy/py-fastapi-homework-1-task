@@ -5,21 +5,23 @@ from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db, MovieModel
-from schemas import MovieListResponseSchema
+from schemas import MovieListResponseSchema, MovieDetailResponseSchema
 
 router = APIRouter()
 
 
-@router.get("/movies/", response_model=MovieListResponseSchema, responses={
-    404: {
-        "description": "No movies found.",
-        "content": {
-            "application/json": {
-                "example": {"detail": "No movies found."}
+@router.get(
+    "/movies/", response_model=MovieListResponseSchema, responses={
+        404: {
+            "description": "No movies found.",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "No movies found."}
+                }
             }
         }
     }
-})
+)
 async def get_movies(
     page: Annotated[
         int, Query(ge=1, description="The page number to fetch")
@@ -53,3 +55,33 @@ async def get_movies(
         "total_pages": total_pages,
         "total_items": total_items,
     }
+
+
+@router.get(
+    "/movies/{movie_id}/",
+    response_model=MovieDetailResponseSchema,
+    responses={
+        "404": {
+            "description": "Movie not found",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": "Movie with the given ID was not found."
+                    }
+                }
+            }
+        }
+    }
+)
+async def get_single_movie(movie_id: int, db: AsyncSession = Depends(get_db)):
+    query = select(MovieModel).where(MovieModel.id == movie_id)
+    result = await db.execute(query)
+    movie = result.scalar()
+
+    if not movie:
+        raise HTTPException(
+            status_code=404,
+            detail="Movie with the given ID was not found."
+        )
+
+    return movie
