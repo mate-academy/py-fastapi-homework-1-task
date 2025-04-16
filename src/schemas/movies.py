@@ -1,5 +1,4 @@
 from datetime import date
-from decimal import Decimal
 
 from pydantic import BaseModel, PositiveFloat
 
@@ -14,7 +13,7 @@ class MovieBaseSchema(BaseModel):
     orig_title: str
     status: str
     orig_lang: str
-    budget: Decimal
+    budget: float
     revenue: float
     country: str
 
