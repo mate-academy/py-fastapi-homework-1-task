@@ -7,14 +7,14 @@ class Movie(BaseModel):
     id: int
     name: str
     date: date
-    score: int
+    score: float
     genre: str
     overview: str
     crew: str
     orig_title: str
     status: str
     orig_lang: str
-    budget: int
+    budget: float
     revenue: float
     country: str
 
