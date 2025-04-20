@@ -3,6 +3,7 @@ name = "src"
 version = "0.1.0"
 description = "Mate task for first lesson"
 authors = ["Yurii Okal <yurii.okal@mate.com>"]
+packages = [{ include = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -18,6 +19,7 @@ pytest-env = "^1.1.5"
 flake8 = "^7.1.1"
 aiosqlite = "^0.21.0"
 pytest-asyncio = "^0.25.3"
+greenlet = "^3.2.0"
 
 
 [build-system]
