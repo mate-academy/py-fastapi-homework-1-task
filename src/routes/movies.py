@@ -8,7 +8,7 @@ from database.models import MovieModel
 router = APIRouter()
 
 
-@router.get("/", response_model=PaginatedMoviesResponse)
+@router.get("/movies/", response_model=PaginatedMoviesResponse)
 async def get_movies(
     page: int = Query(1, ge=1),
     per_page: int = Query(10, ge=1, le=20),
@@ -37,7 +37,7 @@ async def get_movies(
     }
 
 
-@router.get("/{movie_id}/", response_model=Movie)
+@router.get("/movies/{movie_id}/", response_model=Movie)
 async def get_movie_by_id(
     movie_id: int,
     db: AsyncSession = Depends(get_db),
