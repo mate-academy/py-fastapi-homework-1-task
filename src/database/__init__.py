@@ -1,7 +1,4 @@
-from database.models import (
-    Base,
-    MovieModel
-)
+from database.models import Base, MovieModel
 from database.session import (
     init_db,
     close_db,
