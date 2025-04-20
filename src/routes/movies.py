@@ -35,8 +35,8 @@ async def get_movies(
             if len(movies) == per_page
             else None
         ),
-    "total_pages": total_pages,
-    "total_items": total_items,
+        "total_pages": total_pages,
+        "total_items": total_items,
     }
 
 
