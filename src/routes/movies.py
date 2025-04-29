@@ -61,6 +61,6 @@ async def get_movie_by_id(
     movie = result.scalar_one_or_none()
 
     if movie is None:
-        raise HTTPException(status_code=404, detail=f"Movie with the given ID was not found.")
+        raise HTTPException(status_code=404, detail="Movie with the given ID was not found.")
 
     return movie
