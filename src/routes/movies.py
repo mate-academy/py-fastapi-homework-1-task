@@ -23,6 +23,9 @@ async def get_movies(
     if total_items == 0:
         raise HTTPException(status_code=404, detail="No movies found.")
 
+    if total_items == 0:
+        raise HTTPException(status_code=404, detail="No movies found.")
+
     stmt = select(MovieModel).offset(offset).limit(per_page)
     result = await db.execute(stmt)
     movies = result.scalars().all()
