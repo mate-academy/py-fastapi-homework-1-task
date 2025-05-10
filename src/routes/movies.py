@@ -10,6 +10,7 @@ from schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
 
 router = APIRouter()
 
+
 @router.get("/movies/{film_id}/", response_model=MovieDetailResponseSchema)
 async def get_film(film_id: int, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(MovieModel).where(MovieModel.id == film_id))
@@ -34,6 +35,7 @@ async def get_movies(
         select(MovieModel).order_by(MovieModel.id).offset(skip).limit(per_page)
     )
     movies = result.scalars().all()
+
     if not movies:
         raise HTTPException(status_code=404, detail="No movies found.")
 
