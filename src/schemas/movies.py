@@ -1,8 +1,10 @@
-from pydantic import BaseModel
 from datetime import date
 
+from pydantic import BaseModel, ConfigDict
 
-class MovieBase(BaseModel):
+
+class MovieDetailResponseSchema(BaseModel):
+    id: int
     name: str
     date: date
     score: float
@@ -16,14 +18,13 @@ class MovieBase(BaseModel):
     revenue: float
     country: str
 
-
-class MovieListResponseSchema(MovieBase):
-    id: int
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
-class MovieDetailResponseSchema(MovieBase):
-    class Config:
-        from_attributes = True
+
+class MovieListResponseSchema(BaseModel):
+    movies: list[MovieDetailResponseSchema]
+    prev_page: str | None
+    next_page: str | None
+    total_pages: int
+    total_items: int
