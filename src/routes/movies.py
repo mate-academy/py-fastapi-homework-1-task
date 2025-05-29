@@ -44,10 +44,13 @@ async def get_movie_list(
 
 @router.get("/movies/{movie_id}/")
 async def get_detail_movie(movie_id: int, db: AsyncSession = Depends(get_db)) -> MovieDetailResponseSchema:
-    result = await db.scalars(select(MovieModel).where(MovieModel.id == movie_id))
-    movie = result.first()
+    result = await db.execute(select(MovieModel).where(MovieModel.id == movie_id))
+    movie = result.scalar_one_or_none()
 
     if movie is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Movie with the given ID was not found.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Movie with the given ID was not found."
+        )
 
     return MovieDetailResponseSchema.model_validate(movie)

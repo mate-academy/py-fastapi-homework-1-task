@@ -35,7 +35,7 @@ class MovieListResponseSchema(BaseModel):
                             "id": 1,
                             "name": "Creed III",
                             "date": "2023-03-02",
-                            "score": 73,
+                            "score": 73.0,
                             "genre": "Drama,Action",
                             "overview": "After dominating the boxing world, Adonis Creed has been thriving in both "
                                         "his career and family life...",
