@@ -27,7 +27,7 @@ async def get_movie_list(
     movies = result.all()
     if not movies:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No movies found.")
-    base_url = request.url.path
+    base_url = request.base_url
     prev_page = (
         f"{base_url}?page={page - 1}&per_page={per_page}" if page > 1 else None
     )
@@ -45,11 +45,10 @@ async def get_movie_list(
 
 @router.get("/movies/{movie_id}")
 async def get_detail_movie(movie_id: int, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(MovieModel).where(MovieModel.id==movie_id))
-    film = result.scalar_one_or_none()
+    movie = await db.get(MovieModel, movie_id)
 
 
-    if not film:
+    if not movie:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Movie with the given ID was not found.")
 
-    return MovieDetailResponseSchema.model_validate(film)
+    return MovieDetailResponseSchema.model_validate(movie)

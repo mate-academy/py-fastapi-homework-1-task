@@ -35,10 +35,42 @@ class MovieDetailResponseSchema(BaseMovieSchema):
 
 class MovieListResponseSchema(BaseModel):
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_schema_extra={
+            "examples": [
+                {
+                    "movies": [
+                        {
+                            "id": 1,
+                            "name": "Creed III",
+                            "date": "2023-03-02",
+                            "score": 73,
+                            "genre": "Drama,Action",
+                            "overview":
+                                "After dominating the boxing world, "
+                                "Adonis Creed has been thriving in both "
+                                "his career and family life...",
+                            "crew": "Michael B. Jordan, Tessa Thompson",
+                            "orig_title": "Creed III",
+                            "status": "Released",
+                            "orig_lang": "English",
+                            "budget": 75000000,
+                            "revenue": 271616668,
+                            "country": "AU"
+                        }
+                    ],
+                    "prev_page": "/theater/movies/?page=1&per_page=10",
+                    "next_page": "/theater/movies/?page=3&per_page=10",
+                    "total_pages": 1000,
+                    "total_items": 9999
+                }
+            ]
+        }
+    )
 
     movies: list[MovieDetailResponseSchema]
-    prev_page: str | None = None
-    next_page: str | None = None
+    prev_page: str | None
+    next_page: str | None
     total_pages: int
     total_items: int
