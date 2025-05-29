@@ -23,9 +23,12 @@ async def get_movie_list(
     total_pages = math.ceil(total_items / per_page)
     offset = (page - 1) * per_page
     result = await db.scalars(select(MovieModel).offset(offset).limit(per_page))
-    movies = result.all()
-    if not movies:
+    movies_orm = result.all()
+    if not movies_orm:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No movies found.")
+    movies = [
+        MovieDetailResponseSchema.model_validate(movie) for movie in movies_orm
+    ]
     base_url = request.url.path
     prev_page = (
         f"{base_url}?page={page - 1}&per_page={per_page}" if page > 1 else None
