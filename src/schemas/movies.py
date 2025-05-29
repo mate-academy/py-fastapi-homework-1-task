@@ -5,7 +5,7 @@ from pydantic import (
 from datetime import date
 
 
-class BaseMoviSchema(BaseModel):
+class BaseMovieSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     name: str
@@ -22,7 +22,7 @@ class BaseMoviSchema(BaseModel):
     country: str
 
 
-class MovieDetailResponseSchema(BaseMoviSchema):
+class MovieDetailResponseSchema(BaseMovieSchema):
     id: int
 
 
