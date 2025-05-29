@@ -1,6 +1,6 @@
 import math
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, status, Request, FastAPI
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -9,7 +9,6 @@ from schemas import MovieListResponseSchema, MovieDetailResponseSchema
 
 router = APIRouter()
 
-from fastapi import FastAPI
 
 app = FastAPI()
 
@@ -51,7 +50,6 @@ async def get_movie_list(
 @router.get("/movies/{movie_id}")
 async def get_detail_movie(movie_id: int, db: AsyncSession = Depends(get_db)):
     movie = await db.get(MovieModel, movie_id)
-
 
     if not movie:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Movie with the given ID was not found.")

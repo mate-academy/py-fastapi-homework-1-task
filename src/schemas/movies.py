@@ -38,7 +38,7 @@ class MovieListResponseSchema(BaseModel):
                             "genre": "Drama,Action",
                             "overview": "After dominating the boxing world, Adonis Creed has been thriving in both his career and family life...",
                             "crew": "Michael B. Jordan, Tessa Thompson",
-                            "orig_title": "Creed III",
+                            "origin_title": "Creed III",
                             "status": "Released",
                             "orig_lang": "English",
                             "budget": 75000000,
