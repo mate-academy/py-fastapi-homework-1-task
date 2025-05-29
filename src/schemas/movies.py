@@ -1,17 +1,18 @@
+from typing import Optional
+
 from pydantic import BaseModel, ConfigDict, field_validator, ValidationError
 from datetime import date
 
 
 class BaseMovieSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-
     name: str
     date: date
     score: float
     genre: str
     overview: str
     crew: str
-    origin_title: str
+    orig_title: str
     status: str
     orig_lang: str
     budget: float
@@ -34,11 +35,12 @@ class MovieListResponseSchema(BaseModel):
                             "id": 1,
                             "name": "Creed III",
                             "date": "2023-03-02",
-                            "score": 73,
+                            "score": 73.0,
                             "genre": "Drama,Action",
-                            "overview": "After dominating the boxing world, Adonis Creed has been thriving in both his career and family life...",
+                            "overview": "After dominating the boxing world, Adonis Creed has been thriving in both "
+                                        "his career and family life...",
                             "crew": "Michael B. Jordan, Tessa Thompson",
-                            "origin_title": "Creed III",
+                            "orig_title": "Creed III",
                             "status": "Released",
                             "orig_lang": "English",
                             "budget": 75000000,
@@ -54,9 +56,8 @@ class MovieListResponseSchema(BaseModel):
             ]
         }
     )
-
     movies: list[MovieDetailResponseSchema]
-    prev_page: str | None
-    next_page: str | None
+    prev_page: Optional[str] = None
+    next_page: Optional[str] = None
     total_pages: int
     total_items: int
