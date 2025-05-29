@@ -10,9 +10,6 @@ from schemas import MovieListResponseSchema, MovieDetailResponseSchema
 router = APIRouter()
 
 
-app = FastAPI()
-
-
 @router.get("/movies/")
 async def get_movie_list(
     request: Request,
