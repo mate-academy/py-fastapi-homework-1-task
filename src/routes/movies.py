@@ -36,7 +36,6 @@ async def get_movies(
     total_movies = count_result.scalar()
     total_pages = max((total_movies + per_page - 1) // per_page, 1)
 
-
     url_path = request.url.path
     query_base = f"{url_path}?per_page={per_page}"
 
