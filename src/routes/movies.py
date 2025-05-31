@@ -34,7 +34,8 @@ async def get_movies(
 
     count_result = await db.execute(select(func.count()).select_from(MovieModel))
     total_movies = count_result.scalar()
-    total_pages = (total_movies + per_page - 1) // per_page
+    total_pages = max((total_movies + per_page - 1) // per_page, 1)
+
 
     url_path = request.url.path
     query_base = f"{url_path}?per_page={per_page}"
