@@ -1,9 +1,10 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi_pagination import add_pagination
 
-from database import init_db, close_db
-from routes import movie_router
+from src.database import init_db, close_db
+from src.routes import movie_router
 
 
 @asynccontextmanager
@@ -22,3 +23,5 @@ app = FastAPI(
 api_version_prefix = "/api/v1"
 
 app.include_router(movie_router, prefix=f"{api_version_prefix}/theater", tags=["theater"])
+
+add_pagination(app)
