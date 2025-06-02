@@ -123,7 +123,7 @@ async def test_page_exceeds_maximum(client, db_session, seed_database):
 
     response = await client.get(f"/api/v1/theater/movies/?page={max_page + 1}&per_page={per_page}")
     assert response.status_code == 404
-    assert response.json()["detail"] == "No movies found."
+    assert response.json()["detail"] == "Page not found."
 
 
 @pytest.mark.asyncio
