@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db, MovieModel
@@ -14,7 +14,7 @@ async def list_movies(
     db: AsyncSession = Depends(get_db)
 ):
 
-    total_items = await db.scalar(select(MovieModel).count())
+    total_items = await db.scalar(select(func.count()).select_from(MovieModel))
     total_pages = (total_items + limit - 1) // limit if total_items > 0 else 1
 
     if page > total_pages:
