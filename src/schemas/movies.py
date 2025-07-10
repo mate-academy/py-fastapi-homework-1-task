@@ -22,15 +22,17 @@ class MovieBase(BaseModel):
 class MovieListResponseSchema(MovieBase):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = {
+        "from_attributes": True,
+    }
 
 
 class MovieDetailResponseSchema(MovieBase):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = {
+        "from_attributes": True,
+    }
 
 
 class MoviePaginatedResponseSchema(BaseModel):
@@ -40,5 +42,6 @@ class MoviePaginatedResponseSchema(BaseModel):
     total_pages: int
     total_items: int
 
-    class Config:
-        from_attributes = True
+    model_config = {
+        "from_attributes": True,
+    }
