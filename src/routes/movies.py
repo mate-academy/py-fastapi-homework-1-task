@@ -8,7 +8,6 @@ from schemas.movies import MoviePaginatedResponseSchema, MovieListResponseSchema
 
 router = APIRouter()
 
-# Write your code here
 
 @router.get("/movies/", response_model=MoviePaginatedResponseSchema)
 async def get_movies(
@@ -47,3 +46,11 @@ async def get_movies(
         total_items=total_items
     )
 
+
+@router.get("/movies/{movie_id}/", response_model=MovieDetailResponseSchema)
+async def get_movie(movie_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(MovieModel).where(MovieModel.id == movie_id))
+    movie = result.scalar_one_or_none()
+    if not movie:
+        raise HTTPException(status_code=404, detail="Movie with the given ID was not found.")
+    return movie

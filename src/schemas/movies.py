@@ -1,4 +1,3 @@
-# Write your code here
 import datetime
 from typing import List, Optional
 
@@ -21,6 +20,13 @@ class MovieBase(BaseModel):
 
 
 class MovieListResponseSchema(MovieBase):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
+class MovieDetailResponseSchema(MovieBase):
     id: int
 
     class Config:
