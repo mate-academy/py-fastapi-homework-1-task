@@ -9,6 +9,7 @@ from database import get_db, MovieModel
 
 router = APIRouter(prefix="/movies", tags=["Movies"])
 
+
 @router.get("/", response_model=MovieListResponseSchema)
 async def get_movies(
     page: int = Query(1, ge=1),

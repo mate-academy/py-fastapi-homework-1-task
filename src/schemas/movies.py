@@ -5,6 +5,7 @@ from datetime import date
 from pydantic import BaseModel, ConfigDict, field_serializer
 from typing import List
 
+
 class MovieDetailResponseSchema(BaseModel):
     id: int
     name: str
