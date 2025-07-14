@@ -18,7 +18,6 @@ async def get_movie_with_id(movie_id: int, db: AsyncSession = Depends(get_db)):
 
 
 async def get_obj_count(db: AsyncSession = Depends(get_db)):
-    """Returns count of movies"""
     stmt = select(func.count()).select_from(MovieModel)
     result = await db.execute(stmt)
     total_items = result.scalar_one()
