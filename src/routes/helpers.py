@@ -26,7 +26,7 @@ class Paginator:
         return str(url)
 
     def _get_previous_page(self) -> Optional[str]:
-        if self.page == 1 or self.page > self.number_of_pages + 1:
+        if self.page == 1:
             return None
         url = self.request.url.include_query_params(page=self.page - 1)
         return str(url)
