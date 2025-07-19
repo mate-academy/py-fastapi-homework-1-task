@@ -63,6 +63,7 @@ async def paginate(
 ) -> dict:
     paginator = Paginator(session, query, page, per_page)
     result = await paginator.get_response()
-    if paginator.number_of_pages < page:
+
+    if result["total_items"] == 0 or paginator.number_of_pages < page:
         raise HTTPException(status_code=404, detail="No movies found.")
     return result
