@@ -15,4 +15,9 @@ async def get_movies(
     per_page: int = Query(10, ge=1, le=20),
     db: AsyncSession = Depends(get_db),
 ):
+    result = await db.execute(select(MovieModel))
+    movie = result.scalar()
+    if not movie:
+        raise HTTPException(status_code=404, detail="No movies found.")
+
     return await paginate(db, select(MovieModel), page, per_page)
