@@ -1,5 +1,6 @@
 from typing import Optional
 
+from fastapi import HTTPException
 from sqlalchemy import Select, select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -65,4 +66,7 @@ async def paginate(
     session: AsyncSession, query: Select, page: int, per_page: int
 ) -> dict:
     paginator = Paginator(session, query, page, per_page)
-    return await paginator.get_response()
+    result = await paginator.get_response()
+    if paginator.number_of_pages < page:
+        raise HTTPException(status_code=404, detail="No movies found.")
+    return result
