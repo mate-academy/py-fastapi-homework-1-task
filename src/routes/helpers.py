@@ -4,11 +4,7 @@ from fastapi import HTTPException
 from sqlalchemy import Select, select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database import get_db
 from middlewares.pagination import request_object
-
-
-db = get_db()
 
 
 class Paginator:
