@@ -6,7 +6,7 @@ from pydantic import BaseModel, AnyHttpUrl
 M = TypeVar("M")
 
 
-class MovieBase(BaseModel):
+class MovieDetailResponseSchema(BaseModel):
     id: int
     name: str
     date: datetime.date
@@ -20,6 +20,9 @@ class MovieBase(BaseModel):
     budget: float
     revenue: float
     country: str
+
+    class Config:
+        from_attributes = True
 
 
 class MovieListResponseSchema(BaseModel, Generic[M]):
