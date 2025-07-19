@@ -1,12 +1,14 @@
 import datetime
 
 from typing import Generic, TypeVar, Optional, List
-from pydantic import BaseModel, AnyHttpUrl
+from pydantic import BaseModel, AnyHttpUrl, ConfigDict
 
 M = TypeVar("M")
 
 
 class MovieDetailResponseSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     name: str
     date: datetime.date
@@ -20,9 +22,6 @@ class MovieDetailResponseSchema(BaseModel):
     budget: float
     revenue: float
     country: str
-
-    class Config:
-        from_attributes = True
 
 
 class MovieListResponseSchema(BaseModel, Generic[M]):
