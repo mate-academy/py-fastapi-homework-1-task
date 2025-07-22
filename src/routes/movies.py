@@ -6,7 +6,7 @@ from database import get_db
 from database.models import MovieModel
 from schemas.movies import MovieListResponseSchema
 
-from schemas import MovieDetailResponseSchema
+from schemas.movies import MovieDetailResponseSchema
 
 router = APIRouter()
 
