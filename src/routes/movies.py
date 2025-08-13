@@ -13,6 +13,7 @@ from sqlalchemy.sql.functions import func
 
 router = APIRouter()
 
+
 @router.get("/movies/", response_model=MovieListResponseSchema)
 async def get_movie_list(
     request: Request,
@@ -20,18 +21,6 @@ async def get_movie_list(
     page: int = Query(1, ge=1),
     per_page: int = Query(10, ge=1, le=20)
 ):
-    if page < 1 or per_page < 1:
-        raise HTTPException(
-            status_code=422,
-            detail=[
-                {
-                    "loc": ["query", "page"],
-                    "msg": "ensure this value is greater than or equal to 1",
-                    "type": "value_error.number.not_ge"
-                }
-            ]
-        )
-
     offset = (page - 1) * per_page
     result = await db.execute(
         select(MovieModel).offset(offset).limit(per_page)
@@ -54,14 +43,14 @@ async def get_movie_list(
         prev_page=prev_page,
         next_page=next_page,
         total_pages=total_pages,
-        total_items=total_items
+        total_items=total_items,
     )
 
 
-@router.get("/movies/{movie_id}", response_model=MovieDetailResponseSchema)
+@router.get("/movies/{movie_id}/", response_model=MovieDetailResponseSchema)
 async def get_movie_detail(movie_id: int,db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(MovieModel).where(MovieModel.id == movie_id))
     movie = result.scalar_one_or_none()
     if not movie:
-        raise HTTPException(status_code=404, detail="Movie not found")
+        raise HTTPException(status_code=404, detail="Movie with the given ID was not found.")
     return movie

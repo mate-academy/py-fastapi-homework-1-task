@@ -20,6 +20,7 @@ class MovieDetailResponseSchema(BaseModel):
     class Config:
         from_attributes = True
 
+
 class MovieListResponseSchema(BaseModel):
     movies: list[MovieDetailResponseSchema]
     prev_page: str | None
