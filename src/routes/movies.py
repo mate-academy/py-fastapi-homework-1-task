@@ -30,16 +30,16 @@ async def read_movies(
     if not movies:
         raise HTTPException(status_code=404, detail="No movies found.")
 
-    prev_page = f"/theater/movies/?page={page - 1}&per_page={per_page}" if page > 1 else None
-    next_page = f"/theater/movies/?page={page + 1}&per_page={per_page}" if (page * per_page) < total_items else None
+    prev_page = f"/theater/movies/?page={max(1, page - 1)}&per_page={per_page}"
+    next_page = f"/theater/movies/?page={min(total_pages, page + 1)}&per_page={per_page}"
 
-    return {
-        "movies": movies,
-        "prev_page": prev_page,
-        "next_page": next_page,
-        "total_pages": total_pages,
-        "total_items": total_items
-    }
+    return MovieListResponseSchema(
+        movies=[MovieDetailResponseSchema.model_validate(movie) for movie in movies],
+        prev_page=prev_page,
+        next_page=next_page,
+        total_pages=total_pages,
+        total_items=total_items,
+    )
 
 
 @router.get("/movies/{movie_id}/", response_model=MovieDetailResponseSchema)
@@ -48,4 +48,4 @@ async def get_film(movie_id: int, db: AsyncSession = Depends(get_db)):
     film = result.scalar_one_or_none()
     if not film:
         raise HTTPException(status_code=404, detail="Movie with the given ID was not found.")
-    return film
+    return MovieDetailResponseSchema.model_validate(film)
