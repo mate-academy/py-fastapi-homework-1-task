@@ -4,6 +4,7 @@ from typing import List, Optional
 from pydantic import BaseModel, condecimal, constr
 from datetime import date
 
+
 class MovieDetailResponseSchema(BaseModel):
     id: int
     name: str
@@ -20,7 +21,8 @@ class MovieDetailResponseSchema(BaseModel):
     country: str
 
     class Config:
-        from_attributes=True
+        from_attributes = True
+
 
 class MovieListResponseSchema(BaseModel):
     movies: List[MovieDetailResponseSchema]

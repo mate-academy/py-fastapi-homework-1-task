@@ -6,7 +6,6 @@ from database import get_db, MovieModel
 
 from schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
 
-
 router = APIRouter()
 
 
@@ -43,12 +42,12 @@ async def get_movies(
         raise HTTPException(status_code=404, detail="No movies found.")
 
     result = await db.execute(
-    select(MovieModel).offset((page - 1) * per_page).limit(per_page)
+        select(MovieModel).offset((page - 1) * per_page).limit(per_page)
     )
     movies = result.scalars().all()
 
-    prev_page = f"/movies?page={page-1}&per_page={per_page}" if page > 1 else None
-    next_page = f"/movies?page={page+1}&per_page={per_page}" if page < total_pages else None
+    prev_page = f"/movies?page={page - 1}&per_page={per_page}" if page > 1 else None
+    next_page = f"/movies?page={page + 1}&per_page={per_page}" if page < total_pages else None
 
     return MovieListResponseSchema(
         movies=movies,
