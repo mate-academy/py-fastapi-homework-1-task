@@ -6,9 +6,6 @@ from sqlalchemy import select, func
 
 from database import get_db, MovieModel
 from schemas.movies import (
-    MovieBase,
-    MovieCreate,
-    MovieRead,
     MovieListResponseSchema,
     MovieDetailResponseSchema
 )
@@ -26,20 +23,11 @@ async def get_movie(movie_id: int, db: AsyncSession = Depends(get_db)):
     return movie
 
 
-@router.post("/movies/", response_model=MovieRead)
-async def create_movie(movie: MovieCreate, db: AsyncSession = Depends(get_db)):
-    new_movie = MovieModel(**movie.model_dump())
-    db.add(new_movie)
-    await db.commit()
-    await db.refresh(new_movie)
-    return new_movie
-
-
 @router.get("/movies/", response_model=MovieListResponseSchema)
 async def get_movies(
     request: Request,
     page: int = Query(1, ge=1),
-    per_page: int = Query(10, ge=1, le=100),
+    per_page: int = Query(10, ge=1, le=20),
     db: AsyncSession = Depends(get_db)
 ):
     total_result = await db.execute(select(func.count()).select_from(MovieModel))
@@ -64,8 +52,9 @@ async def get_movies(
             detail=f"Page {page} does not exist. Total pages: {total_pages}"
         )
 
+    movies_data = [MovieDetailResponseSchema.from_orm(movie) for movie in movies]
     return MovieListResponseSchema(
-        movies=movies,
+        movies=movies_data,
         prev_page=prev_page,
         next_page=next_page,
         total_pages=total_pages,

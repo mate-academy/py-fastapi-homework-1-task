@@ -1,28 +1,10 @@
 import datetime
-from pydantic import Field
+from decimal import Decimal
+
+from pydantic import Field, ConfigDict
 from typing import List, Optional
 
 from pydantic import BaseModel
-
-
-class MovieBase(BaseModel):
-    title: str
-    genre: str
-    price: float
-
-
-class MovieCreate(MovieBase):
-    pass
-
-
-class MovieRead(BaseModel):
-    id: int
-    name: str
-    genre: str
-    score: float
-
-    class Config:
-        from_attributes = True
 
 
 class MovieDetailResponseSchema(BaseModel):
@@ -36,16 +18,16 @@ class MovieDetailResponseSchema(BaseModel):
     orig_title: str
     status: str
     orig_lang: str
-    budget: int
-    revenue: int
+    budget: float
+    revenue: float
     country: str
 
     class Config:
-        orm_mode = True
-
+        model_config = ConfigDict(from_attributes=True)
+        from_attributes = True
 
 class MovieListResponseSchema(BaseModel):
-    movies: List[MovieRead]
+    movies: List[MovieDetailResponseSchema]
     prev_page: Optional[str]
     next_page: Optional[str]
     total_pages: int
