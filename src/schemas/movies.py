@@ -15,11 +15,12 @@ class MovieBaseSchema(BaseModel):
     orig_title: str
     status: str
     orig_lang: str
-    budget: float
-    revenue: float
+    budget: int
+    revenue: int
     country: str
 
-    model_config = ConfigDict(from_attributes=True)
+    class Config:
+        from_attributes = True
 
 
 class MovieDetailResponseSchema(MovieBaseSchema):
@@ -27,7 +28,7 @@ class MovieDetailResponseSchema(MovieBaseSchema):
 
 
 class MovieListResponseSchema(BaseModel):
-    movies: List[MovieBaseSchema]
+    movies: List[MovieDetailResponseSchema]
     total_pages: int
     total_items: int
     prev_page: Optional[str]

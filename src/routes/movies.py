@@ -2,15 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from database import get_db, MovieModel
 from schemas import MovieDetailResponseSchema, MovieListResponseSchema
+from database import get_db, MovieModel
 
 router = APIRouter()
-
-
-@router.get("/")
-async def read_root():
-    return {"message": "Hello World"}
 
 
 @router.get("/movies/{movie_id}/", response_model=MovieDetailResponseSchema)
@@ -22,17 +17,19 @@ async def get_movie_by_id(
     movie = result.scalar_one_or_none()
 
     if not movie:
-        raise HTTPException(status_code=404, detail="Movie with the given ID was not found.")
+        raise HTTPException(
+            status_code=404, detail="Movie with the given ID was not found."
+        )
 
     return movie
 
 
 @router.get("/movies/", response_model=MovieListResponseSchema)
 async def get_movies(
-        request: Request,
-        page: int = Query(1, ge=1),
-        per_page: int = Query(10, ge=1, le=20),
-        db: AsyncSession = Depends(get_db),
+    request: Request,
+    page: int = Query(1, ge=1),
+    per_page: int = Query(10, ge=1, le=20),
+    db: AsyncSession = Depends(get_db),
 ):
 
     total_items_result = await db.execute(select(func.count()).select_from(MovieModel))
@@ -47,18 +44,14 @@ async def get_movies(
     if page > total_pages:
         raise HTTPException(status_code=404, detail="No movies found.")
 
-    result = await db.execute(
-        select(MovieModel)
-        .offset(offset)
-        .limit(per_page)
-    )
+    result = await db.execute(select(MovieModel).offset(offset).limit(per_page))
     movies = result.scalars().all()
 
-    base_url = str(request.url).split("?")[0]
+    base_url_path = "/api/v1/theater/movies/"
     query_str = f"&per_page={per_page}"
 
-    prev_page = f"{base_url}?page={page - 1}{query_str}" if page > 1 else None
-    next_page = f"{base_url}?page={page + 1}{query_str}" if page < total_pages else None
+    prev_page = f"{base_url_path}?page={page - 1}{query_str}" if page > 1 else ""
+    next_page = f"{base_url_path}?page={page + 1}{query_str}" if page < total_pages else ""
 
     return {
         "movies": movies,
