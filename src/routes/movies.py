@@ -1,4 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    Query,
+    status
+)
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -40,28 +46,23 @@ async def get_movies(
         description="Items per page, must be between 1 and 20"
     )
 ):
-    offset = (page - 1) * per_page
-
-    result_movies = await db.execute(
-        select(MovieModel).limit(per_page).offset(offset)
-    )
-    movies = result_movies.scalars().all()
-
-    if not movies:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No movies found."
-        )
-    movie_schemas = [
-        MovieDetailResponseSchema.model_validate(movie)
-        for movie in movies
-    ]
-
     total_items_result = await db.execute(
         select(func.count()).select_from(MovieModel)
     )
     total_items = total_items_result.scalar()
+    if total_items == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No movies found."
+        )
     total_pages = (total_items + per_page - 1) // per_page
+    offset = (page - 1) * per_page
+    if offset >= total_items:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No movies found."
+        )
+
     base_url = "/theater/movies/"
     prev_page = (
         f"{base_url}?page={page - 1}&per_page={per_page}"
@@ -71,6 +72,18 @@ async def get_movies(
         f"{base_url}?page={page + 1}&per_page={per_page}"
         if page < total_pages else None
     )
+
+    result_movies = await db.execute(
+        select(MovieModel)
+        .limit(per_page)
+        .offset(offset)
+        .order_by(MovieModel.id)
+    )
+    movies = result_movies.scalars().all()
+    movie_schemas = [
+        MovieDetailResponseSchema.model_validate(movie)
+        for movie in movies
+    ]
 
     return MovieListResponseSchema(
         movies=movie_schemas,
