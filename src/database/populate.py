@@ -4,8 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
 from tqdm.asyncio import tqdm
 
-from config import get_settings
-from database import MovieModel, get_db_contextmanager, init_db
+from src.config import get_settings
+from src.database.models import Base, MovieModel
+from src.database.session import init_db, close_db, get_db_contextmanager, get_db, reset_sqlite_database
 
 
 class CSVDatabaseSeeder:
