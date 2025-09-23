@@ -4,8 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
 from tqdm.asyncio import tqdm
 
-from config import get_settings
-from database import MovieModel, get_db_contextmanager, init_db
+from src.config import get_settings
+from src.database import MovieModel, get_db_contextmanager, init_db
 
 
 class CSVDatabaseSeeder:
@@ -48,7 +48,7 @@ class CSVDatabaseSeeder:
         replaces missing values, trims whitespace, and converts dates to a standard format.
 
         :return: Preprocessed DataFrame containing the movie data.
-        :rtype: pd.DataFrame
+        :rtype: pd.DataFramePyCharm
         """
         data = pd.read_csv(self._csv_file_path)
         data = data.drop_duplicates(subset=['names', 'date_x'], keep='first')
