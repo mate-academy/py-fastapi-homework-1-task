@@ -49,7 +49,8 @@ async def get_movies(
         movies=[MovieDetailResponseSchema.model_validate(movie) for movie in movies],
         prev_page=str(request.url.replace_query_params(page=page - 1, per_page=per_page)) if page > 1 else None,
         next_page=(
-            str(request.url.replace_query_params(page=page + 1, per_page=per_page)) if page < total_pages else None,
+            str(request.url.replace_query_params(page=page + 1, per_page=per_page))
+            if page < total_pages else None
         ),
         total_pages=total_pages,
         total_items=total_items,
