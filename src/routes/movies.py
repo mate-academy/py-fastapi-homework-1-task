@@ -32,19 +32,19 @@ async def get_movies(
     db: AsyncSession = Depends(get_db),
 ) -> MovieListResponseSchema:
     result = await db.execute(
-        select(MovieModel, func.count().over().label("total_count"))
-        .offset((page - 1) * per_page)
-        .limit(per_page)
+        select(MovieModel).offset((page - 1) * per_page).limit(per_page)
     )
-    rows = result.all()
-    if not rows:
+    movies = result.scalars().all()
+    if not movies:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No movies found."
         )
 
-    movies = [movie for movie, _ in rows]
-    total_items = rows[0].total_count if rows else 0
+    result = await db.execute(
+        select(func.count(MovieModel.id))
+    )
+    total_items = result.scalar_one()
     raw_url = str(request.url.path)
     total_pages = math.ceil(total_items / per_page)
 
