@@ -32,7 +32,7 @@ async def get_movies(
     db: AsyncSession = Depends(get_db),
 ) -> MovieListResponseSchema:
     result = await db.execute(
-        select(MovieModel).offset((page - 1) * per_page).limit(per_page)
+        select(MovieModel).offset((page - 1) * per_page).limit(per_page).order_by(MovieModel.id)
     )
     movies = result.scalars().all()
     if not movies:
@@ -41,17 +41,16 @@ async def get_movies(
             detail="No movies found."
         )
 
-    result = await db.execute(
-        select(func.count(MovieModel.id))
-    )
+    result = await db.execute(select(func.count()).select_from(MovieModel))
     total_items = result.scalar_one()
-    raw_url = str(request.url.path)
     total_pages = math.ceil(total_items / per_page)
 
     return MovieListResponseSchema(
         movies=[MovieDetailResponseSchema.model_validate(movie) for movie in movies],
-        prev_page=f"{raw_url}?page={page - 1}&per_page={per_page}" if page > 1 else None,
-        next_page=f"{raw_url}?page={page + 1}&per_page={per_page}" if page < total_pages else None,
+        prev_page=str(request.url.replace_query_params(page=page - 1, per_page=per_page)) if page > 1 else None,
+        next_page=(
+            str(request.url.replace_query_params(page=page + 1, per_page=per_page)) if page < total_pages else None,
+        ),
         total_pages=total_pages,
         total_items=total_items,
     )
