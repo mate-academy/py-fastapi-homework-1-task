@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
+
 class MovieDetailResponseSchema(BaseModel):
     id: int
     name: str
@@ -27,9 +28,9 @@ class MovieListResponseSchema(BaseModel):
     movies: List[MovieDetailResponseSchema]
     total_items: int
     total_pages: int
-    prev_page: Optional[int]
-    next_page: Optional[int]
+    prev_page: Optional[str] = None
+    next_page: Optional[str] = None
 
     model_config = {
-    "from_attributes": True,
+        "from_attributes": True,
     }
