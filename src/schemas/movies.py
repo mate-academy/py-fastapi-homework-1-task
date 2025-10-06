@@ -18,11 +18,14 @@ class MovieBase(BaseModel):
     revenue: float
     country: str
 
+
 class MovieRead(MovieBase):
     id: int
 
+
 class MovieDetailResponseSchema(MovieBase):
     pass
+
 
 class MovieListResponseSchema(BaseModel):
     movies: list[MovieDetailResponseSchema]
