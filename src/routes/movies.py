@@ -3,7 +3,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import MovieModel, get_db
-from schemas.movies import MovieBase, MovieListResponseSchema
+from schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
 
 router = APIRouter()
 
@@ -40,7 +40,7 @@ async def read_movies(
     }
 
 
-@router.get("/movies/{movie_id}/", response_model=MovieBase)
+@router.get("/movies/{movie_id}/", response_model=MovieDetailResponseSchema)
 async def read_movie(movie_id: int, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(MovieModel).where(MovieModel.id == movie_id))
     movie = result.scalar_one_or_none()
@@ -48,4 +48,4 @@ async def read_movie(movie_id: int, db: AsyncSession = Depends(get_db)):
         raise HTTPException(
             status_code=404, detail="Movie with the given ID was not found."
         )
-    return MovieBase(**movie.__dict__)
+    return MovieDetailResponseSchema(**movie.__dict__)

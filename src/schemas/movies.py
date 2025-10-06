@@ -1,9 +1,11 @@
 import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
-class MovieBase(BaseModel):
+class MovieDetailResponseSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     name: str
     date: datetime.date
@@ -20,7 +22,9 @@ class MovieBase(BaseModel):
 
 
 class MovieListResponseSchema(BaseModel):
-    movies: list[MovieBase]
+    model_config = ConfigDict(from_attributes=True)
+
+    movies: list[MovieDetailResponseSchema]
     prev_page: str | None
     next_page: str | None
     total_pages: int
