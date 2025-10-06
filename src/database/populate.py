@@ -8,6 +8,8 @@ from config import get_settings
 from database import MovieModel, get_db_contextmanager, init_db
 
 
+from .models import MovieModel
+from .session import get_db_contextmanager, init_db
 class CSVDatabaseSeeder:
     """
     Class responsible for seeding the database with movie data from a CSV file.

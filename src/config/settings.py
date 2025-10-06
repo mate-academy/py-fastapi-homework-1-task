@@ -1,31 +1,28 @@
-import os
+from __future__ import annotations
+
+from functools import lru_cache
 from pathlib import Path
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+SRC_DIR = Path(__file__).resolve().parents[1]
+DB_PATH = SRC_DIR / "database" / "source" / "movies.db"
+TEST_DB_PATH = SRC_DIR / "database" / "source" / "test_movies.db"
 
 
 class Settings(BaseSettings):
-    BASE_DIR: Path = Path(__file__).parent.parent
-    PATH_TO_DB: str = str(BASE_DIR / "database" / "source" / "movies.db")
-    PATH_TO_MOVIES_CSV: str = str(BASE_DIR / "database" / "seed_data" / "imdb_movies.csv")
+    TESTING: bool = False
+    DB_URL: str = f"sqlite+aiosqlite:///{DB_PATH}"
+    TEST_DB_URL: str = f"sqlite+aiosqlite:///{TEST_DB_PATH}"
+
+    # конфіг Pydantic v2 для BaseSettings
+    model_config = SettingsConfigDict(
+        env_file=".env",   # якщо потрібно читати з .env
+        extra="ignore",
+    )
 
 
-class TestingSettings(Settings):
-    PATH_TO_DB: str = ":memory:"
-
-
-def get_settings() -> BaseSettings:
-    """
-    Retrieve the application settings based on the environment.
-
-    This function checks the `ENVIRONMENT` environment variable to determine
-    which settings class to use. If `ENVIRONMENT` is set to `"testing"`, it
-    returns an instance of `TestingSettings`. Otherwise, it defaults to `Settings`.
-
-    :return: An instance of the appropriate settings class.
-    :rtype: BaseSettings
-    """
-    environment = os.getenv("ENVIRONMENT", "developing")
-    if environment == "testing":
-        return TestingSettings()
+@lru_cache
+def get_settings() -> Settings:
     return Settings()
