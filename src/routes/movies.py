@@ -3,10 +3,10 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from database import MovieModel, get_db
+from database import get_db, MovieModel
 from src.schemas.movies import (
     MovieDetailResponseSchema,
-    MoviesListResponseSchema
+    MovieListResponseSchema
 )
 
 router = APIRouter()
@@ -33,7 +33,7 @@ async def get_movie(
     return MovieDetailResponseSchema.model_validate(movie)
 
 
-@router.get("/movies/", response_model=MoviesListResponseSchema)
+@router.get("/movies/", response_model=MovieListResponseSchema)
 async def movies_list(
     request: Request,
     page: int = Query(1, ge=1, description="Page number"),
@@ -45,18 +45,14 @@ async def movies_list(
         raise HTTPException(status_code=404, detail="No movies found.")
     total_pages = (total_items + per_page - 1) // per_page
     offset = (page - 1) * per_page
-    query = select(MovieModel).offset(offset).limit(per_page)
+    query = select(MovieModel).order_by(MovieModel.id).offset(offset).limit(per_page)
     movies = (await db.scalars(query)).all()
     if not movies:
         raise HTTPException(status_code=404, detail="No movies found.")
     root_path = request.scope.get("root_path", "")
     base_path = root_path + request.url.path
     prev_page = f"{base_path}?page={page - 1}&per_page={per_page}" if page > 1 else None
-    next_page = (
-        f"{base_path}?page={page + 1}&per_page={per_page}"
-        if page < total_pages
-        else None
-    )
+    next_page = f"{base_path}?page={page + 1}&per_page={per_page}" if page < total_pages else None
     return {
         "movies": [MovieDetailResponseSchema.model_validate(m) for m in movies],
         "prev_page": prev_page,

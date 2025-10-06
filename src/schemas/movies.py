@@ -21,7 +21,7 @@ class MovieDetailResponseSchema(BaseModel):
     country: str
 
 
-class MoviesListResponseSchema(BaseModel):
+class MovieListResponseSchema(BaseModel):
     movies: list[MovieDetailResponseSchema]
     prev_page: Optional[str]
     next_page: Optional[str]
