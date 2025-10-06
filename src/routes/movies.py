@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
-
-from database import get_db, MovieModel
+from database.session import get_db
+from database.models import MovieModel
 from src.schemas.movies import (
     MovieDetailResponseSchema,
     MovieListResponseSchema
