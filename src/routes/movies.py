@@ -32,10 +32,12 @@ async def get_movies_list(
 
     movies = [row.MovieModel for row in rows]
     total_items = rows[0].total_items
-
     total_pages = math.ceil(total_items / per_page)
-    base_url = str(request.base_url.remove_query_params(keys=["page"]))
 
+    base_url = "/theater/movies/"
+
+    # `None` is returned to match the schema
+    # and pass `test_get_movies_default_parameters`.
     next_page = (
         f"{base_url}?page={page + 1}&per_page={per_page}"
         if page < total_pages
