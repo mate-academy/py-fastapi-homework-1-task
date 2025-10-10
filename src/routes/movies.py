@@ -36,14 +36,8 @@ async def get_movies_list(
 
     base_url = "/theater/movies/"
 
-    # `None` is returned to match the schema
-    # and pass `test_get_movies_default_parameters`.
-    next_page = (
-        f"{base_url}?page={page + 1}&per_page={per_page}"
-        if page < total_pages
-        else None
-    )
-    prev_page = f"{base_url}?page={page - 1}&per_page={per_page}" if page > 1 else None
+    next_page = f"{base_url}?page={min(total_pages, page + 1)}&per_page={per_page}"
+    prev_page = f"{base_url}?page={max(1, page - 1)}&per_page={per_page}"
 
     return MovieListResponseSchema(
         movies=movies,
