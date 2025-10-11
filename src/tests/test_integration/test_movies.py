@@ -37,9 +37,12 @@ async def test_get_movies_default_parameters(client, seed_database):
     assert len(response_data["movies"]) == 10
     assert response_data["total_pages"] > 0
     assert response_data["total_items"] > 0
-    assert response_data["prev_page"] is None
-    if response_data["total_pages"] > 1:
-        assert response_data["next_page"] is not None
+    assert response_data["prev_page"] == (
+        "/theater/movies/?page=1&per_page=10"
+    )
+    assert response_data["next_page"] == (
+        f"/theater/movies/?page={min(response_data['total_pages'], 2)}&per_page=10"
+    )
 
 
 @pytest.mark.asyncio
@@ -62,13 +65,14 @@ async def test_get_movies_with_custom_parameters(client, seed_database):
     assert len(response_data["movies"]) == per_page
     assert response_data["total_pages"] > 0
     assert response_data["total_items"] > 0
-    if page > 1:
-        assert response_data["prev_page"] is not None
-    if page < response_data["total_pages"]:
-        assert response_data["next_page"] is not None
-    else:
-        assert response_data["next_page"] is None
-
+    assert response_data["prev_page"] == (
+        f"/theater/movies/?page={max(1, page - 1)}&per_page={per_page}"
+    )
+    assert response_data["next_page"] == (
+        f"/theater/movies/?page="
+        f"{min(response_data['total_pages'], page + 1)}"
+        f"&per_page={per_page}"
+    )
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("page, per_page, expected_detail", [
