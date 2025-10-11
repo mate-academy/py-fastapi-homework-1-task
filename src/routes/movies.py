@@ -1,10 +1,64 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select
+import math
+
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db, MovieModel
+from schemas.movies import MovieListResponseSchema, MovieDetailResponseSchema
+
+router = APIRouter(prefix="/movies", tags=["Movies"])
 
 
-router = APIRouter()
+@router.get("/", response_model=MovieListResponseSchema)
+async def get_movies_list(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+    page: int = Query(1, ge=1),
+    per_page: int = Query(10, ge=1, le=20),
+):
+    offset = (page - 1) * per_page
 
-# Write your code here
+    query = (
+        select(MovieModel, func.count(MovieModel.id).over().label("total_items"))
+        .offset(offset)
+        .limit(per_page)
+    )
+    result = await db.execute(query)
+    rows = result.all()
+
+    if not rows:
+        raise HTTPException(status_code=404, detail="No movies found.")
+
+    movies = [row.MovieModel for row in rows]
+    total_items = rows[0].total_items
+    total_pages = math.ceil(total_items / per_page)
+
+    base_url = "/theater/movies/"
+
+    next_page = f"{base_url}?page={min(total_pages, page + 1)}&per_page={per_page}"
+    prev_page = f"{base_url}?page={max(1, page - 1)}&per_page={per_page}"
+
+    return MovieListResponseSchema(
+        movies=movies,
+        prev_page=prev_page,
+        next_page=next_page,
+        total_pages=total_pages,
+        total_items=total_items,
+    )
+
+
+@router.get("/{movie_id}/", response_model=MovieDetailResponseSchema)
+async def get_movie_detail(
+    movie_id: int,
+    db: AsyncSession = Depends(get_db),
+):
+    query = select(MovieModel).where(MovieModel.id == movie_id)
+    result = await db.execute(query)
+    movie = result.scalar_one_or_none()
+
+    if not movie:
+        raise HTTPException(
+            status_code=404, detail="Movie with the given ID was not found."
+        )
+    return movie
