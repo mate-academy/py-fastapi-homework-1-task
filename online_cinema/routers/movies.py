@@ -8,12 +8,12 @@ from database import get_db
 
 router = APIRouter()
 
-@router.get("/movies/{film_id}", response_model=FilmRead)
-async def get_film(film_id: int, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Film).where(Film.id == film_id))
+@router.get("/movies/{movie_id}", response_model=FilmRead)
+async def get_film(movie_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Film).where(Film.id == movie_id))
     film = result.scalar_one_or_none()
     if not film:
-        raise HTTPException(status_code=404, detail="Film not found")
+        raise HTTPException(status_code=404, detail="Movie with the given ID was not found.")
     return film
 
 @router.post("/movies/", response_model=FilmRead)
