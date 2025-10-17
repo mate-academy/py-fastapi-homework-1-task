@@ -1,7 +1,17 @@
 import datetime
-
-from sqlalchemy import String, Float, Text, DECIMAL, UniqueConstraint, Date
-from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
+from sqlalchemy import (
+    String,
+    Float,
+    Text,
+    UniqueConstraint,
+    Date,
+    Integer,
+)
+from sqlalchemy.orm import (
+    DeclarativeBase,
+    mapped_column,
+    Mapped,
+)
 
 
 class Base(DeclarativeBase):
@@ -21,13 +31,13 @@ class MovieModel(Base):
     orig_title: Mapped[str] = mapped_column(String(255), nullable=False)
     status: Mapped[str] = mapped_column(String(50), nullable=False)
     orig_lang: Mapped[str] = mapped_column(String(50), nullable=False)
-    budget: Mapped[float] = mapped_column(DECIMAL(10, 2), nullable=False)
-    revenue: Mapped[float] = mapped_column(Float, nullable=False)
+    budget: Mapped[int] = mapped_column(Integer, nullable=False)
+    revenue: Mapped[int] = mapped_column(Integer, nullable=False)
     country: Mapped[str] = mapped_column(String(3), nullable=False)
 
     __table_args__ = (
         UniqueConstraint("name", "date", name="unique_movie_constraint"),
     )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Movie(name='{self.name}', release_date='{self.date}', score={self.score})>"

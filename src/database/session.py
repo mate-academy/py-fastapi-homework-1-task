@@ -1,11 +1,14 @@
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.ext.asyncio import (
+    create_async_engine,
+    AsyncSession,
+)
 from sqlalchemy.orm import sessionmaker
 
-from config import get_settings
-from database import Base
+from src.config import get_settings
+from .models import Base
 
 settings = get_settings()
 
