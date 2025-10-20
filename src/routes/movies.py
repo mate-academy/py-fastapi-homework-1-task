@@ -17,8 +17,10 @@ router = APIRouter(prefix="/movies", tags=["Movies"])
 
 LINK_PREFIX = "/movies/"
 
+
 def build_link(base: str, page: int, per_page: int) -> str:
     return f"{base}?page={page}&per_page={per_page}"
+
 
 @router.get("/", response_model=MovieListResponseSchema)
 async def get_movies(
@@ -33,7 +35,7 @@ async def get_movies(
     if total_items == 0:
         raise HTTPException(status_code=404, detail="No movies found.")
 
-    #pagination
+# pagination
     total_pages = math.ceil(total_items / per_page)
     offset = (page - 1) * per_page
 
@@ -62,6 +64,7 @@ async def get_movies(
         total_pages=total_pages,
         total_items=total_items,
     )
+
 
 @router.get("/{movie_id}/", response_model=MovieDetailResponseSchema, status_code=status.HTTP_200_OK,)
 async def get_movie_detail(
