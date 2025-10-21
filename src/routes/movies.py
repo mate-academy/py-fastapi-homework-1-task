@@ -1,5 +1,4 @@
 import math
-from decimal import Decimal
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -24,8 +23,8 @@ def to_movie_schema(m: MovieModel) -> MovieDetailResponseSchema:
         orig_title=m.orig_title,
         status=m.status,
         orig_lang=m.orig_lang,
-        budget=int(m.budget) if not isinstance(m.budget, Decimal) else int(m.budget),
-        revenue=int(m.revenue),
+        budget=float(m.budget),
+        revenue=float(m.revenue),
         country=m.country,
     )
 
