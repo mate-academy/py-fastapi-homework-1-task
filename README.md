@@ -126,6 +126,7 @@ router = APIRouter()
 
 @router.get("/example")
 async def example_route(db: AsyncSession = Depends(get_db)):
+   pass
     # Use the db session here to interact with the database
 ```
 
