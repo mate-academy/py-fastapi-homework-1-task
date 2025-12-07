@@ -10,6 +10,7 @@ from src.schemas import MovieDetailResponseSchema, MovieListResponseSchema
 
 router = APIRouter()
 
+
 @router.get("/movies/", response_model=MovieListResponseSchema)
 async def get_all_movies(
         page: int = Query(1, ge=1),
@@ -29,10 +30,10 @@ async def get_all_movies(
 
     total_pages = math.ceil(total_items / per_page)
     prev_page = (
-        f"/movies/?page={page - 1}&per_page={per_page}" if page > 1 else None
+        f"/theater/movies/?page={page - 1}&per_page={per_page}" if page > 1 else None
     )
     next_page = (
-        f"/movies/?page={page + 1}&per_page={per_page}"
+        f"/theater/movies/?page={page + 1}&per_page={per_page}"
         if page < total_pages else None
     )
     return {
@@ -47,11 +48,11 @@ async def get_all_movies(
 @router.get("/movies/{movie_id}/", response_model=MovieDetailResponseSchema)
 async def get_one_movie(movie_id: int, db: AsyncSession = Depends(get_db)):
     movie = await db.execute(select(MovieModel)
-                            .where(MovieModel.id == movie_id))
-    if not movie:
+                             .where(MovieModel.id == movie_id))
+    if movie is None:
         raise HTTPException(
             status_code=404,
             detail="Movie with the given ID was not found."
         )
 
-    return movie.scalar()
+    return movie
