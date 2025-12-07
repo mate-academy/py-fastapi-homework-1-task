@@ -1,1 +1,35 @@
-# Write your code here
+from typing import List, Optional
+
+from pydantic import BaseModel
+from datetime import date
+
+
+class MovieBaseSchema(BaseModel):
+    name: str
+    date: date
+    score: float
+    genre: str
+    overview: str
+    crew: str
+    orig_title: str
+    status: str
+    orig_lang: str
+    budget: float
+    revenue: float
+    country: str
+
+
+class MovieListResponseSchema(MovieBaseSchema):
+    id: int
+
+
+class MovieDetailsResponseSchema(MovieBaseSchema):
+    id: int
+
+
+class PaginatedMoviesResponse(BaseModel):
+    movies: List[MovieListResponseSchema]
+    prev_page: Optional[str] = None
+    next_page: Optional[str] = None
+    total_pages: int
+    total_items: int
