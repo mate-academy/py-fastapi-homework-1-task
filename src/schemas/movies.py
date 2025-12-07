@@ -19,16 +19,12 @@ class MovieBaseSchema(BaseModel):
     country: str
 
 
+class MovieDetailResponseSchema(MovieBaseSchema):
+    id: int
+
+
 class MovieListResponseSchema(MovieBaseSchema):
-    id: int
-
-
-class MovieDetailsResponseSchema(MovieBaseSchema):
-    id: int
-
-
-class PaginatedMoviesResponse(BaseModel):
-    movies: List[MovieListResponseSchema]
+    movies: List[MovieDetailResponseSchema]
     prev_page: Optional[str] = None
     next_page: Optional[str] = None
     total_pages: int
