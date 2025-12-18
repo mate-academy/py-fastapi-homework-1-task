@@ -22,11 +22,13 @@ async def get_movies(
 
     movies = await crud.get_all_movies(db=db, page=page, per_page=per_page)
 
-    if not movies:
+    count = await crud.get_count_movies(db=db)
+
+    if not movies and count == 0:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="No movies found."
         )
-    count = await crud.get_count_movies(db=db)
+
     total_pages = math.ceil(count / per_page)
 
     response = {
