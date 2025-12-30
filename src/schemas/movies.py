@@ -1,10 +1,6 @@
-# Write your code here
 import datetime
-from typing import Optional
-
+from typing import Optional, List
 from pydantic import BaseModel, AnyUrl
-
-from pydantic import BaseModel
 
 
 class MovieBase(BaseModel):
@@ -23,23 +19,19 @@ class MovieBase(BaseModel):
     country: str
 
 
+class MovieDetailResponseSchema(MovieBase):
+    pass
+
+
 class MovieListResponseSchema(BaseModel):
     prev_page: Optional[AnyUrl] = None
     next_page: Optional[AnyUrl] = None
     total_pages: int
     total_items: int
-    movies: list[MovieDetailResponseSchema]
+    movies: List[MovieDetailResponseSchema]
 
     class Config:
-        from_attributes = True
-
-
-class MovieListResponseSchema(MovieBase):
-    pass
-
-
-class MovieDetailResponseSchema(MovieBase):
-    pass
+        orm_mode = True
 
 
 class PaginatedMoviesResponse(BaseModel):
