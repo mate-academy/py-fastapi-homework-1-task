@@ -90,7 +90,7 @@ async def get_movies(
 async def get_movie(movie_id: int, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(MovieModel).where(MovieModel.id == movie_id))
     movie = result.scalars().first()
->>>>>>> 2fec9553f095de91dcaebf68b763ea70082776f6
+
     if not movie:
         raise HTTPException(status_code=404, detail="Movie with the given ID was not found.")
     return movie

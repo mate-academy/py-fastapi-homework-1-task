@@ -4,10 +4,6 @@ from typing import Optional
 
 from pydantic import BaseModel, AnyUrl
 
-
-class MovieDetailResponseSchema(BaseModel):
-from typing import List, Optional
-
 from pydantic import BaseModel
 
 
