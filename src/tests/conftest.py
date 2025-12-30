@@ -8,6 +8,10 @@ from database import (
 )
 from database.populate import CSVDatabaseSeeder
 from main import app
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 
 
 @pytest_asyncio.fixture(scope="function", autouse=True)
