@@ -1,20 +1,17 @@
 # Write your code here
 import datetime
-<<<<<<< HEAD
 from typing import Optional
 
 from pydantic import BaseModel, AnyUrl
 
 
 class MovieDetailResponseSchema(BaseModel):
-=======
 from typing import List, Optional
 
 from pydantic import BaseModel
 
 
 class MovieBase(BaseModel):
->>>>>>> 2fec9553f095de91dcaebf68b763ea70082776f6
     id: int
     name: str
     date: datetime.date
@@ -29,7 +26,6 @@ class MovieBase(BaseModel):
     revenue: float
     country: str
 
-<<<<<<< HEAD
 
 class MovieListResponseSchema(BaseModel):
     prev_page: Optional[AnyUrl] = None
@@ -37,7 +33,7 @@ class MovieListResponseSchema(BaseModel):
     total_pages: int
     total_items: int
     movies: list[MovieDetailResponseSchema]
-=======
+
     class Config:
         from_attributes = True
 
@@ -56,4 +52,3 @@ class PaginatedMoviesResponse(BaseModel):
     next_page: Optional[str]
     total_pages: int
     total_items: int
->>>>>>> 2fec9553f095de91dcaebf68b763ea70082776f6

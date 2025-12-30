@@ -4,18 +4,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import math
 
 from database import get_db, MovieModel
-<<<<<<< HEAD
 from crud import get_all_movies, get_movies_count, get_movie_by_id
 from database import get_db
 from schemas import MovieListResponseSchema, MovieDetailResponseSchema
-=======
 from schemas import PaginatedMoviesResponse, MovieDetailResponseSchema
->>>>>>> 2fec9553f095de91dcaebf68b763ea70082776f6
+
 
 
 router = APIRouter()
 
-<<<<<<< HEAD
 # Write your code here
 @router.get("/movies/", response_model=MovieListResponseSchema)
 async def get_movies(
