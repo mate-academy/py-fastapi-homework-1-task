@@ -1,7 +1,7 @@
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 
-from app.config import get_settings
+from src.config import settings
 from database import (
     reset_sqlite_database,
     get_db_contextmanager,
