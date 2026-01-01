@@ -7,7 +7,7 @@ from src.schemas.movies import MoviesPageOut, MovieOut
 from sqlalchemy import select, func
 
 
-async def get_movies_list(page: int, per_page: int, db: AsyncSQLiteSessionLocal) -> list[MoviesPageOut]:
+async def get_movies_list(page: int, per_page: int, db: AsyncSQLiteSessionLocal) -> MoviesPageOut:
     count_stmt = select(func.count(models.MovieModel.id))
     total_items: int = await db.scalar(count_stmt)
 
@@ -27,10 +27,10 @@ async def get_movies_list(page: int, per_page: int, db: AsyncSQLiteSessionLocal)
     movies = result.scalars().all()
 
     prev_page = (
-        f"/movies?page={page - 1}&per_page={per_page}" if page > 1 else None
+        f"/theater/movies?page={page - 1}&per_page={per_page}" if page > 1 else None
     )
     next_page = (
-        f"/movies?page={page + 1}&per_page={per_page}" if page < total_pages else None
+        f"/theater/movies?page={page + 1}&per_page={per_page}" if page < total_pages else None
     )
 
     return MoviesPageOut(
