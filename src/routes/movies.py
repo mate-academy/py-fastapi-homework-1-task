@@ -36,7 +36,7 @@ async def create_movie(
     try:
         await db.commit()
         await db.refresh(db_movie)
-    except Exception as e:
+    except Exception:
         await db.rollback()
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

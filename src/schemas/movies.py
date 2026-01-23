@@ -26,8 +26,7 @@ class MovieListResponseSchema(MovieBase):
     id: int
 
     class Config:
-        from_attributes=True
-
+        from_attributes = True
 
 
 class MovieDetailResponseSchema(MovieBase):
@@ -40,7 +39,7 @@ class MovieDetailResponseSchema(MovieBase):
     revenue: float
 
     class Config:
-        from_attributes=True
+        from_attributes = True
 
 
 class MovieUpdate(BaseModel):
