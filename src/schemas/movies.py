@@ -6,7 +6,7 @@ from typing import Optional
 class MovieBase(BaseModel):
     name: str
     date: date
-    score: float = Field(ge=0, le=10)
+    score: float = Field(ge=0, le=100)
     genre: str
     overview: str
     crew: str
@@ -23,7 +23,10 @@ class MovieCreate(MovieBase):
 
 
 class MovieListResponseSchema(MovieBase):
-    id: int
+    total_items: int
+    total_pages: int
+    prev_page: Optional[str]
+    next_page: Optional[str]
 
     class Config:
         from_attributes = True

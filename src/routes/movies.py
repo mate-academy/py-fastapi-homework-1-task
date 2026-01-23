@@ -1,9 +1,9 @@
+from src.schemas.movies import MovieListResponseSchema
 from src.database import get_db
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from typing import List
+from sqlalchemy import select, func
 
 from src.database.models import MovieModel
 from src.schemas import movies as schemas
@@ -14,16 +14,37 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=List[schemas.MovieRead])
+@router.get("/", response_model=MovieListResponseSchema)
 async def get_movies(
-        skip: int = 0,
-        limit: int = 10,
+        request: Request,
+        page: int = Query(1, ge=1),
+        per_page: int = Query(10, ge=1, le=100),
         db: AsyncSession = Depends(get_db)
 ):
-    query = select(MovieModel).offset(skip).limit(limit)
+    offset = (page - 1) * per_page
+
+    total_count_query = select(func.count()).select_from(MovieModel)
+    total_count_result = await db.execute(total_count_query)
+    total_items = total_count_result.scalar()
+
+    query = select(MovieModel).offset(offset).limit(per_page)
     result = await db.execute(query)
-    movie_list = result.scalars().all()
-    return movie_list
+    movies = result.scalars().all()
+
+    total_pages = (total_items + per_page - 1) // per_page
+
+    base_url = str(request.url).split('?')[0]
+
+    prev_page = f"{base_url}?page={page - 1}&per_page={per_page}" if page > 1 else None
+    next_page = f"{base_url}?page={page + 1}&per_page={per_page}" if page < total_pages else None
+
+    return {
+        "items": movies,
+        "total_items": total_items,
+        "total_pages": total_pages,
+        "prev_page": prev_page,
+        "next_page": next_page
+    }
 
 
 @router.post("/", response_model=schemas.MovieRead, status_code=status.HTTP_201_CREATED)
@@ -45,7 +66,7 @@ async def create_movie(
     return db_movie
 
 
-@router.get("/{movie_id}", response_model=schemas.MovieRead)
+@router.get("/{movie_id}", response_model=schemas.MovieDetailResponseSchema)
 async def get_movie(
         movie_id: int,
         db: AsyncSession = Depends(get_db)
@@ -57,6 +78,6 @@ async def get_movie(
     if not movie:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Movie not found"
+            detail="Movie with the given ID was not found."
         )
     return movie
