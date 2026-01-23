@@ -18,7 +18,7 @@ router = APIRouter(
 async def get_movies(
         request: Request,
         page: int = Query(1, ge=1),
-        per_page: int = Query(10, ge=1, le=100),
+        per_page: int = Query(10, ge=1, le=20),
         db: AsyncSession = Depends(get_db)
 ):
     offset = (page - 1) * per_page
@@ -26,6 +26,11 @@ async def get_movies(
     total_count_query = select(func.count()).select_from(MovieModel)
     total_count_result = await db.execute(total_count_query)
     total_items = total_count_result.scalar()
+    if total_items == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No movie found."
+        )
 
     query = select(MovieModel).offset(offset).limit(per_page)
     result = await db.execute(query)
@@ -39,7 +44,7 @@ async def get_movies(
     next_page = f"{base_url}?page={page + 1}&per_page={per_page}" if page < total_pages else None
 
     return {
-        "items": movies,
+        "movies": movies,
         "total_items": total_items,
         "total_pages": total_pages,
         "prev_page": prev_page,
@@ -66,7 +71,7 @@ async def create_movie(
     return db_movie
 
 
-@router.get("/{movie_id}", response_model=schemas.MovieDetailResponseSchema)
+@router.get("/{movie_id}/", response_model=schemas.MovieDetailResponseSchema)
 async def get_movie(
         movie_id: int,
         db: AsyncSession = Depends(get_db)

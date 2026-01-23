@@ -22,7 +22,7 @@ class MovieCreate(MovieBase):
     pass
 
 
-class MovieListResponseSchema(MovieBase):
+class MovieListResponseSchema(BaseModel):
     total_items: int
     total_pages: int
     prev_page: Optional[str]
