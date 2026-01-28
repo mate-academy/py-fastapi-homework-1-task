@@ -10,6 +10,7 @@ from database.session import get_db
 from database.models import MovieModel
 from schemas.movies import MovieListResponseSchema, MovieDetailResponseSchema
 
+
 router = APIRouter()
 
 @router.get("/movies/", response_model=PaginatedMoviesResponse)
