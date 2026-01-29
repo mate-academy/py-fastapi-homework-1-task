@@ -17,6 +17,7 @@ async def get_movies_paginated(db: AsyncSession, page: int, per_page: int):
 
     return movies, total_items
 
+
 async def get_movie_by_id(db: AsyncSession, movie_id: int):
     query = select(MovieModel).where(MovieModel.id == movie_id)
     result = await db.execute(query)

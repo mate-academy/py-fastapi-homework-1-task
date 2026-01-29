@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
 from crud import movies
-import schemas
+from schemas.movies import MovieDetailsResponse, MovieListResponse, MovieShortResponse
 from database import get_db
 
 router = APIRouter(
@@ -16,8 +16,9 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=List[schemas.movies.MovieListResponse])
+@router.get("/", response_model=MovieListResponse)
 async def list_movies(
+        request: Request,
         page: Annotated[int, Query(ge=1)] = 1,
         per_page: Annotated[int, Query(ge=1, le=20)] = 10,
         db: AsyncSession = Depends(get_db)
@@ -26,9 +27,9 @@ async def list_movies(
 
     total_pages = ceil(total_items / per_page) if total_items > 0 else 1
 
-    base_url = str(Request.url).split('?')[0]
+    base_url = str(request.url).split('?')[0]
 
-    if not movies:
+    if not movies_:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No movies found."
@@ -46,7 +47,7 @@ async def list_movies(
     }
 
 
-@router.get("/{movie_id}/", response_model=schemas.movies.MovieDetailsResponse)
+@router.get("/{movie_id}/", response_model=MovieDetailsResponse)
 async def get_movie(
         movie_id: int,
         db: AsyncSession = Depends(get_db)

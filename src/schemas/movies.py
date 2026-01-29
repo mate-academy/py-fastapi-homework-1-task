@@ -13,15 +13,15 @@ class MovieDetailsResponse(BaseModel):
     genre: str = Field(max_length=255, examples=["Drama,Action"])
     overview: str = Field(
         examples=["After dominating the boxing world, "
-                "Adonis Creed has been thriving in "
-                "both his career and family life..."]
+                  "Adonis Creed has been thriving in "
+                  "both his career and family life..."]
     )
     crew: str = Field(examples=["Michael B. Jordan, Tessa Thompson"])
     orig_title: str = Field(max_length=255, examples=["Creed III"])
     status: str = Field(max_length=50, examples=["Released"])
     orig_lang: str = Field(max_length=50, examples=["English"])
-    budget: Decimal
-    revenue: Decimal
+    budget: float
+    revenue: float
     country: str = Field(max_length=3, examples=["UK"])
 
     model_config = ConfigDict(from_attributes=True)
