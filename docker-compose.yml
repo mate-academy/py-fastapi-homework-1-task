@@ -1,9 +1,10 @@
 services:
   web:
-    restart: always
+    restart: no
     build: .
     container_name: backend_fastapi
     command: ["/bin/bash", "/commands/run.sh"]
+    # command: ["tail", "-f", "/dev/null"]
     environment:
       - LOG_LEVEL=debug
       - PYTHONPATH=/usr/src/fastapi
@@ -11,7 +12,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./src:/usr/src/fastapi
+      - ./src:/usr/src/fastapi:Z
     networks:
       - fastapi_network
 
