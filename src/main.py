@@ -20,4 +20,4 @@ app = FastAPI(
 )
 
 
-app.include_router(movies.router, prefix=f"/theater", tags=["theater"])
+app.include_router(movies.router, prefix="/theater", tags=["theater"])
