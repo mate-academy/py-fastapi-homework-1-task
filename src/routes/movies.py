@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
 from crud import movies
-from schemas.movies import MovieDetailsResponse, MovieListResponse, MovieShortResponse
+from schemas.movies import MovieDetailsResponse, MovieListResponse
 from database import get_db
 
 router = APIRouter(
