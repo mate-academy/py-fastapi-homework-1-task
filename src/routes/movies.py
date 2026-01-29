@@ -1,9 +1,8 @@
-from typing import Any, Annotated, List
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
 
 from database.models import MovieModel
 from database.session import get_db
@@ -29,7 +28,7 @@ async def get_movie_by_id(
 @router.get("/movies/", response_model=MovieListResponseSchema)
 async def get_movies(
         page: int = Query(1, ge=1),
-        per_page: int = Query(10, ge=1, le=100),
+        per_page: int = Query(10, ge=1, le=20),
         db: AsyncSession = Depends(get_db)
 ):
     total_items = await db.scalar(select(func.count()).select_from(MovieModel))
