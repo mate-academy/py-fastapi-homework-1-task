@@ -27,15 +27,8 @@ class MovieDetailsResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class MovieShortResponse(BaseModel):
-    id: int
-    name: str = Field(max_length=255)
-    date: datetime.date
-    genre: str = Field(max_length=255, examples=["Drama,Action"])
-
-
 class MovieListResponse(BaseModel):
-    movies: List[MovieShortResponse]
+    movies: List[MovieDetailsResponse]
 
     total_items: int = Field(description="Total number of movies")
     total_pages: int = Field(description="Total pages")

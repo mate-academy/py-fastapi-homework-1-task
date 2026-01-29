@@ -27,7 +27,7 @@ async def list_movies(
 
     total_pages = ceil(total_items / per_page) if total_items > 0 else 1
 
-    base_url = str(request.url).split('?')[0]
+    base_url = str(request.url.path).split('?')[0]
 
     if not movies_:
         raise HTTPException(
