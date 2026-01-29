@@ -51,10 +51,22 @@ async def get_movies(
         for movie in movies
     ]
 
+    text_prev = None
+    text_next = None
+    show_prev_page = page - 1 if page > 1 else None
+
+    if show_prev_page:
+        text_prev = f"/theater/movies/?page={show_prev_page}&per_page={per_page}"
+
+    show_next_page = page + 1 if page <= total_pages else None
+
+    if show_next_page:
+        text_next = f"/theater/movies/?page={show_next_page}&per_page={per_page}"
+
     return MovieListResponseSchema(
         movies=movies_schema,
-        prev_page=page - 1 if page > 1 else None,
-        next_page=page + 1 if page < total_pages else None,
+        prev_page=text_prev,
+        next_page=text_next,
         total_pages=total_pages,
         total_items=total_items
     )
