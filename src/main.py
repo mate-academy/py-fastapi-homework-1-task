@@ -19,6 +19,5 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-api_version_prefix = "/api/v1"
 
-app.include_router(movies.router, prefix=f"{api_version_prefix}/theater", tags=["theater"])
+app.include_router(movies.router, prefix=f"/theater", tags=["theater"])
