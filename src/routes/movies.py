@@ -1,14 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
-import math
-
-from database import get_db, MovieModel
-from schemas import MovieListResponseSchema, MovieDetailResponseSchema, PaginatedMoviesResponse
-from database import get_db, MovieModel
 from pydantic import BaseModel
 from typing import List, Optional
 import math
+
+from database import get_db, MovieModel
+
 
 # -------------------------------
 # Pydantic schemas for responses
@@ -19,6 +17,10 @@ class MovieSchema(BaseModel):
     title: str
     description: Optional[str] = None
 
+    class Config:
+        orm_mode = True
+
+
 class PaginatedMoviesResponse(BaseModel):
     movies: List[MovieSchema]
     prev_page: Optional[str]
@@ -26,8 +28,10 @@ class PaginatedMoviesResponse(BaseModel):
     total_pages: int
     total_items: int
 
+
 class MovieDetailResponseSchema(MovieSchema):
     pass
+
 
 # -------------------------------
 # FastAPI router
@@ -45,30 +49,34 @@ async def get_movies(
 ):
     offset = (page - 1) * per_page
 
-    result = await db.execute(select(MovieModel).offset(offset).limit(per_page))
+    result = await db.execute(
+        select(MovieModel).offset(offset).limit(per_page)
+    )
     movies = result.scalars().all()
 
-    total_result = await db.execute(select(func.count()).select_from(MovieModel))
+    total_result = await db.execute(
+        select(func.count()).select_from(MovieModel)
+    )
     total_items = total_result.scalar()
 
-    # Fetch movies from the database with pagination
-    result = await db.execute(select(MovieModel).offset(offset).limit(per_page))
-    movies = result.scalars().all()
-
-    # Get the total number of movies
-    total_result = await db.execute(select(func.count()).select_from(MovieModel))
-    total_items = total_result.scalar()
-
-    # Build previous and next page URLs
-    base_url = str(request.url).split("?")[0]
-    prev_page = f"{base_url}?page={page - 1}&per_page={per_page}" if page > 1 else None
-    next_page = f"{base_url}?page={page + 1}&per_page={per_page}" if offset + len(movies) < total_items else None
-
-    total_pages = math.ceil(total_items / per_page)
-
-    # Raise 404 if no movies are found
     if not movies:
         raise HTTPException(status_code=404, detail="No movies found.")
+
+    base_url = str(request.url).split("?")[0]
+
+    prev_page = (
+        f"{base_url}?page={page - 1}&per_page={per_page}"
+        if page > 1
+        else None
+    )
+
+    next_page = (
+        f"{base_url}?page={page + 1}&per_page={per_page}"
+        if offset + len(movies) < total_items
+        else None
+    )
+
+    total_pages = math.ceil(total_items / per_page)
 
     return {
         "movies": movies,
@@ -80,15 +88,19 @@ async def get_movies(
 
 
 @router.get("/movies/{movie_id}/", response_model=MovieDetailResponseSchema)
-async def get_movie(movie_id: int, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(MovieModel).where(MovieModel.id == movie_id))
+async def get_movie(
+    movie_id: int,
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(MovieModel).where(MovieModel.id == movie_id)
+    )
     movie = result.scalars().first()
 
-    # Fetch a single movie by ID
-    result = await db.execute(select(MovieModel).where(MovieModel.id == movie_id))
-    movie = result.scalars().first()
-
-    # Raise 404 if movie is not found
     if not movie:
-        raise HTTPException(status_code=404, detail="Movie with the given ID was not found.")
+        raise HTTPException(
+            status_code=404,
+            detail="Movie with the given ID was not found.",
+        )
+
     return movie
