@@ -9,9 +9,13 @@ class Settings(BaseSettings):
     PATH_TO_DB: str = str(BASE_DIR / "database" / "source" / "movies.db")
     PATH_TO_MOVIES_CSV: str = str(BASE_DIR / "database" / "seed_data" / "imdb_movies.csv")
 
+    # Add this for SQLAlchemy
+    database_url: str = f"sqlite+aiosqlite:///{PATH_TO_DB}"  # <- for async SQLite
+
 
 class TestingSettings(Settings):
     PATH_TO_DB: str = ":memory:"
+    database_url: str = "sqlite+aiosqlite:///:memory:"  # <- for in-memory testing
 
 
 def get_settings() -> BaseSettings:
