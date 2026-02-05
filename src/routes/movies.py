@@ -1,19 +1,46 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
+from pydantic import BaseModel
+from typing import List, Optional
 import math
 
-from src.database.session import get_db
-from src.database.models import MovieModel
-from schemas.movies import (
-    MovieListResponseSchema,
-    MovieDetailResponseSchema,
-)
+from database import get_db, MovieModel
+
+
+#
+# Pydantic schemas for responses
+# -------------------------------
+
+class MovieSchema(BaseModel):
+    id: int
+    title: str
+    description: Optional[str] = None
+
+    class Config:
+        orm_mode = True
+
+
+class PaginatedMoviesResponse(BaseModel):
+    movies: List[MovieSchema]
+    prev_page: Optional[str]
+    next_page: Optional[str]
+    total_pages: int
+    total_items: int
+
+
+class MovieDetailResponseSchema(MovieSchema):
+    pass
+
+
+# -------------------------------
+# FastAPI router
+# -------------------------------
 
 router = APIRouter()
 
 
-@router.get("/movies/", response_model=MovieListResponseSchema)
+@router.get("/movies/", response_model=PaginatedMoviesResponse)
 async def get_movies(
     request: Request,
     page: int = Query(default=1, ge=1),

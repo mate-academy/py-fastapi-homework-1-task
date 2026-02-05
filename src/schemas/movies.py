@@ -1,12 +1,12 @@
-import datetime
-from typing import Optional, List
-from pydantic import BaseModel, AnyUrl
+from datetime import date
+from typing import List
+
+from pydantic import BaseModel
 
 
 class MovieBase(BaseModel):
-    id: int
     name: str
-    date: datetime.date
+    date: date
     score: float
     genre: str
     overview: str
@@ -19,24 +19,20 @@ class MovieBase(BaseModel):
     country: str
 
 
-class MovieDetailResponseSchema(MovieBase):
+class MovieCreate(MovieBase):
     pass
 
 
-class MovieListResponseSchema(BaseModel):
-    prev_page: Optional[AnyUrl] = None
-    next_page: Optional[AnyUrl] = None
-    total_pages: int
-    total_items: int
-    movies: List[MovieDetailResponseSchema]
+class MovieDetailResponseSchema(MovieBase):
+    id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
-class PaginatedMoviesResponse(BaseModel):
-    movies: List[MovieListResponseSchema]
-    prev_page: Optional[str]
-    next_page: Optional[str]
+class MovieListResponseSchema(BaseModel):
+    movies: List[MovieDetailResponseSchema]
+    prev_page: str | None = None
+    next_page: str | None = None
     total_pages: int
     total_items: int
