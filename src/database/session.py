@@ -1,31 +1,36 @@
-import os
-from pathlib import Path
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from src.settings import get_settings
+from src.database.base import Base  # перевір, звідки імпортується Base
 
-from pydantic_settings import BaseSettings
+settings = get_settings()
+
+DATABASE_URL = f"sqlite:///{settings.PATH_TO_DB}"
+
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False},
+)
+
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine,
+)
 
 
-class Settings(BaseSettings):
-    BASE_DIR: Path = Path(__file__).parent.parent
-    PATH_TO_DB: str = str(BASE_DIR / "database" / "source" / "movies.db")
-    PATH_TO_MOVIES_CSV: str = str(BASE_DIR / "database" / "seed_data" / "imdb_movies.csv")
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
-class TestingSettings(Settings):
-    PATH_TO_DB: str = ":memory:"
-
-
-def get_settings() -> BaseSettings:
+def reset_sqlite_database():
     """
-    Retrieve the application settings based on the environment.
-
-    This function checks the `ENVIRONMENT` environment variable to determine
-    which settings class to use. If `ENVIRONMENT` is set to `"testing"`, it
-    returns an instance of `TestingSettings`. Otherwise, it defaults to `Settings`.
-
-    :return: An instance of the appropriate settings class.
-    :rtype: BaseSettings
+    Drops and recreates all tables.
+    Used for testing environment.
     """
-    environment = os.getenv("ENVIRONMENT", "developing")
-    if environment == "testing":
-        return TestingSettings()
-    return Settings()
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
