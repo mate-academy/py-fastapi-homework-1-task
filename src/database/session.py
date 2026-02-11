@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from src.settings import get_settings
-from src.database.base import Base  # перевір, звідки імпортується Base
+from src.database.base import Base
 
 settings = get_settings()
 
