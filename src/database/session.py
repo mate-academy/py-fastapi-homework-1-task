@@ -4,7 +4,6 @@ from contextlib import asynccontextmanager
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
-from src.settings import get_settings  # pick your correct settings import
 from src.database.base import Base       # pick your correct Base import
 
 settings = get_settings()
