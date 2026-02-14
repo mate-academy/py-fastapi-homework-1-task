@@ -19,6 +19,7 @@ AsyncSessionLocal = sessionmaker(
     expire_on_commit=False
 )
 
+
 async def init_db() -> None:
     """
     Initialize the database: create all tables.
@@ -27,12 +28,14 @@ async def init_db() -> None:
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
+
 async def close_db() -> None:
     """
     Close the database connection.
     Should be called on app shutdown.
     """
     await engine.dispose()
+
 
 @asynccontextmanager
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
@@ -44,6 +47,7 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """
     async with AsyncSessionLocal() as session:
         yield session
+
 
 async def reset_sqlite_database() -> None:
     """
