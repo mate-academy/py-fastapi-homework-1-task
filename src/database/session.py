@@ -6,8 +6,6 @@ from sqlalchemy.orm import sessionmaker
 
 from src.database.base import Base       # pick your correct Base import
 
-settings = get_settings()
-
 DATABASE_URL = f"sqlite+aiosqlite:///{settings.PATH_TO_DB}"
 
 # Async engine and session
