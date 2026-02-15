@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from config import settings
 from database import Base
 
-settings = settings()#good
+settings = settings()
 
 DATABASE_URL = f"sqlite+aiosqlite:///{settings.PATH_TO_DB}"
 
