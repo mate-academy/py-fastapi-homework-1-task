@@ -1,13 +1,13 @@
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 
-from src.config.settings import get_settings
-from src.database.session import (
+from config.settings import get_settings
+from database.session import (
     reset_sqlite_database,
     get_db_contextmanager,
 )
-from src.database.populate import CSVDatabaseSeeder
-from src.main import app
+from database.populate import CSVDatabaseSeeder
+from main import app
 
 
 @pytest_asyncio.fixture(scope="function", autouse=True)
