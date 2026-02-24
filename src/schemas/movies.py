@@ -27,3 +27,5 @@ class MovieListResponseSchema(BaseModel):
     next_page: str | None = None
     total_pages: int
     total_items: int
+
+    model_config = ConfigDict(from_attributes=True)

@@ -2,7 +2,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from database import init_db, close_db
+from src.config import get_settings
+from src.database import init_db, close_db
 from src.routes.movies import router as movie_router
 
 
@@ -19,8 +20,10 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-api_version_prefix = "/api/v1"
+settings = get_settings()
 
 app.include_router(
-    movie_router, prefix=f"{api_version_prefix}/theater", tags=["theater"]
+    movie_router,
+    prefix=f"{settings.API_VERSION}{settings.THEATER_PREFIX}",
+    tags=["theater"]
 )
