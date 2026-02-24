@@ -6,8 +6,8 @@ from src.database import (
     reset_sqlite_database,
     get_db_contextmanager,
 )
-from ..database.populate import CSVDatabaseSeeder
-from ..main import app
+from database.populate import CSVDatabaseSeeder
+from main import app
 
 
 @pytest_asyncio.fixture(scope="function", autouse=True)
