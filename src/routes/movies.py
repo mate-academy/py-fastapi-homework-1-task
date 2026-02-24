@@ -5,9 +5,9 @@ from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
 
-from src.config import get_settings
-from src.database import MovieModel, get_db
-from src.schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
+from ..config import get_settings
+from ..database import MovieModel, get_db
+from ..schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
 
 settings = get_settings()
 
