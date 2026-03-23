@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db, MovieModel
 from schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
@@ -7,6 +6,7 @@ from sqlalchemy import select, func
 
 
 router = APIRouter()
+
 
 @router.get("/movies/", response_model=MovieListResponseSchema)
 async def get_movies(
