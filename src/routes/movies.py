@@ -13,7 +13,7 @@ router = APIRouter()
 async def get_movies(
         request: Request,
         page: int = Query(1, ge=1),
-        per_page: int = Query(10, ge=1, le=100),
+        per_page: int = Query(10, ge=1, le=20),
         db: AsyncSession = Depends(get_db)
 ):
     result = await paginate(
