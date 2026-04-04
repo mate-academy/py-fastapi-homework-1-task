@@ -3,12 +3,11 @@ from sqlalchemy import select, func
 from database.models import MovieModel
 
 
-async def get_movie_list_with_limit_offset(db: AsyncSession, offset: int = 0, limit: int = 20):
+async def get_movie_list_with_limit_offset(
+    db: AsyncSession, offset: int = 0, limit: int = 20
+):
     stmt = (
-        select(
-            MovieModel,
-            func.count().over().label("total_items")
-        )
+        select(MovieModel, func.count().over().label("total_items"))
         .offset(offset)
         .limit(limit)
     )
