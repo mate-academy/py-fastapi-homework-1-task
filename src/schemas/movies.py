@@ -4,6 +4,8 @@ from pydantic import BaseModel, ConfigDict
 
 
 class MovieDetailResponseSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     name: str
     date: date
@@ -15,11 +17,8 @@ class MovieDetailResponseSchema(BaseModel):
     status: str
     orig_lang: str
     budget: int
-    revenue: float
+    revenue: int
     country: str
-
-    class Config:
-        from_attributes = True
 
 
 class MovieListResponseSchema(BaseModel):
