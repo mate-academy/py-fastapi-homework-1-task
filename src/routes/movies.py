@@ -1,5 +1,4 @@
 import math
-from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select, func
@@ -19,7 +18,9 @@ async def get_all_movies(
 ):
     offset = (page - 1) * per_page
     limit = per_page
-    result = await db.execute(select(MovieModel).offset(offset).limit(limit))
+    result = await db.execute(
+        select(MovieModel).order_by(MovieModel.id).offset(offset).limit(limit)
+    )
     movies = result.scalars().all()
 
     total = await db.execute(select(func.count()).select_from(MovieModel))
