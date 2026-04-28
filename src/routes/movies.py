@@ -3,17 +3,10 @@ from math import ceil
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi_pagination import add_pagination, Params
 from database import get_db, MovieModel
 from schemas import MovieListResponseSchema, MovieDetailResponseSchema
 
 router = APIRouter()
-add_pagination(router)
-
-
-class CustomParams(Params):
-    page: int = Query(default=1, ge=1)
-    size: int = Query(default=10, ge=1, le=20, alias="per_page")
 
 
 def validation_error(field: str, msg: str, error_type: str):
@@ -26,32 +19,10 @@ def validation_error(field: str, msg: str, error_type: str):
 
 @router.get("/movies/", response_model=MovieListResponseSchema)
 async def get_movies(
-        page: int = Query(1),
-        size: int = Query(10, alias="per_page"),
+        page: int = Query(1, ge=1),
+        size: int = Query(10, ge=1, le=20, alias="per_page"),
         db: AsyncSession = Depends(get_db)
 ):
-    if page < 1 or size < 1 or size > 20:
-        errors = []
-        if page < 1:
-            errors.append(validation_error(
-                "page",
-                "Input should be greater than or equal to 1",
-                "value_error.number.not_ge")
-            )
-        if size < 1:
-            errors.append(validation_error(
-                "per_page",
-                "Input should be greater than or equal to 1",
-                "value_error.number.not_ge")
-            )
-        if size > 20:
-            errors.append(validation_error(
-                "per_page",
-                "Input should be less than or equal to 20",
-                "value_error.number.not_le")
-            )
-        raise HTTPException(status_code=422, detail=errors)
-
     total_items = await db.scalar(select(func.count(MovieModel.id))) or 0
     total_pages = ceil(total_items / size)
     offset = (page - 1) * size
