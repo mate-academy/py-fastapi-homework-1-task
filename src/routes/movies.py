@@ -8,12 +8,12 @@ from pydantic import BaseModel, Field
 from src.database import get_db, MovieModel
 from src.schemas import movies
 
-router = APIRouter(prefix="/movies")
+router = APIRouter()
 
 
 class PaginationParams(BaseModel):
     page: int = Field(ge=1, default=1)
-    per_page: int = Field(ge=1, default=10)
+    per_page: int = Field(ge=1, le=20, default=10)
 
 
 @router.get(
