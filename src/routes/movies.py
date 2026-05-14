@@ -48,11 +48,11 @@ async def get_movies(
             for movie in movie_list[:per_page]
         ],
         prev_page=(
-            f"/theater/movies/?page={page}&per_page={per_page}"
+            f"/movies/?page={page}&per_page={per_page}"
             if page > 1 else None
         ),
         next_page=(
-            f"/theater/movies/?page={page}&per_page={per_page}"
+            f"/movies/?page={page}&per_page={per_page}"
             if page < total_pages else None
         ),
         total_pages=total_pages,
