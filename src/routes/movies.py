@@ -17,7 +17,10 @@ async def get_movies(
     per_page: int = Query(10, ge=1, le=20),
     db: AsyncSession = Depends(get_db)
 ) -> dict:
-    result = await db.execute(select(MovieModel))
+    offset = (page - 1) * per_page
+    result = await db.execute(
+        select(MovieModel).offset(offset).limit(per_page)
+    )
     movie_list = result.scalars().all()
     total_movies = len(movie_list)
     total_pages = (total_movies + per_page - 1) // per_page
@@ -45,7 +48,7 @@ async def get_movies(
                 revenue=movie.revenue,
                 budget=movie.budget
             )
-            for movie in movie_list[:per_page]
+            for movie in movie_list
         ],
         prev_page=(
             f"/movies/?page={page}&per_page={per_page}"
