@@ -18,14 +18,13 @@ async def get_movies(
     db: AsyncSession = Depends(get_db)
 ) -> dict:
     offset = (page - 1) * per_page
-    result = await db.execute(
-        select(MovieModel).offset(offset).limit(per_page)
-    )
+    query = select(MovieModel).offset(offset).limit(per_page)
+    result = await db.execute(query)
     movie_list = result.scalars().all()
     total_movies = len(movie_list)
-    total_pages = (total_movies + per_page - 1) // per_page
+    total_pages = total_movies // per_page
 
-    if not total_movies or (page > total_pages):
+    if not total_movies:
         raise HTTPException(
             detail="No movies found.",
             status_code=404
