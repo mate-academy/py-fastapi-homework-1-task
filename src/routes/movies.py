@@ -21,7 +21,7 @@ async def get_movies(
 ) -> dict:
 
     total_items = await db.scalar(
-            select(func.count()).select_from(MovieModel)
+        select(func.count()).select_from(MovieModel)
     )
     total_pages = (total_items + per_page - 1) // per_page
 
