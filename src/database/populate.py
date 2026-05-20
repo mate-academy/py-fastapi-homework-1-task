@@ -1,11 +1,17 @@
+import sys
+from pathlib import Path
+
+if __package__ is None or __package__ == "":
+    sys.path.append(str(Path(__file__).resolve().parents[2]))
+
 import pandas as pd
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
 from tqdm.asyncio import tqdm
 
-from config import get_settings
-from database import MovieModel, get_db_contextmanager, init_db
+from src.config import get_settings
+from src.database import MovieModel, get_db_contextmanager, init_db
 
 
 class CSVDatabaseSeeder:
