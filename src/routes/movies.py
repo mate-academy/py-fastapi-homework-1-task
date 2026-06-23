@@ -28,10 +28,13 @@ async def get_paginated_movies(
     result = await db.scalars(select(MovieModel).offset(offset_value).limit(per_page))
     movies = result.all()
 
+    prev_page = f"/theater/movies/?page={page - 1}&per_page={per_page}" if page > 1 else None
+    next_page = f"/theater/movies/?page={page + 1}&per_page={per_page}" if page < total_pages else None
+
     return {
         "movies": movies,
-        "prev_page": f"/theater/movies/?page={page - 1}&per_page={per_page}" if page > 1 else None,
-        "next_page": f"/theater/movies/?page={page + 1}&per_page={per_page}" if page < total_pages else None,
+        "prev_page": prev_page,
+        "next_page": next_page,
         "total_pages": total_pages,
         "total_items": total_items
     }
