@@ -13,16 +13,10 @@ router = APIRouter()
 
 @router.get("/movies/", response_model=MovieListResponseSchema)
 async def get_movies(
-        page: int = Query(default=1),
-        per_page: int = Query(default=10),
+        page: int = Query(default=1, ge=1),
+        per_page: int = Query(default=10, ge=1, le=20),
         db: AsyncSession = Depends(get_db)
 ):
-
-    if page < 1 or per_page < 1:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=[{"msg": "Input should be greater than or equal to 1"}]
-        )
 
     count_query = select(func.count()).select_from(MovieModel)
     count_result = await db.execute(count_query)
@@ -47,7 +41,8 @@ async def get_movies(
     movies_result = await db.execute(movies_query)
     movies = movies_result.scalars().all()
 
-    base_url = "/api/v1/theater/movies/"
+    base_url = "/theater/movies/"
+
     prev_page = f"{base_url}?page={page - 1}&per_page={per_page}" if page > 1 else None
     next_page = f"{base_url}?page={page + 1}&per_page={per_page}" if page < total_pages else None
 
