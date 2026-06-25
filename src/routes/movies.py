@@ -1,10 +1,75 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette import status
 
 from database import get_db, MovieModel
-
+from schemas import MovieListResponseSchema, MovieDetailResponseSchema
 
 router = APIRouter()
 
-# Write your code here
+
+@router.get("/movies/", response_model=MovieListResponseSchema)
+async def get_movies(
+        db: Annotated[AsyncSession, Depends(get_db)],
+        page: int = Query(default=1, gte=1),
+        per_page: int = Query(default=10, gte=1, lte=20)
+):
+    if page < 1 or per_page < 1:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=[{"msg": "Input should be greater than or equal to 1"}],
+        )
+
+    total_items = await db.scalar(select(func.count(MovieModel.id))) or 0
+    if total_items == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No movies found."
+        )
+
+    total_pages = (total_items + per_page - 1) // per_page
+    if page > total_pages:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No movies found."
+        )
+
+    offset = (page - 1) * per_page
+
+    movies_result = await db.scalars(select(MovieModel).offset(offset).limit(per_page))
+    movies = movies_result.all()
+
+    prev_page = (
+        f"/theater/movies/?page={page - 1}&"
+        f"per_page={per_page}"
+    ) if page > 1 else None
+    next_page = (
+        f"/theater/movies/?page={page + 1}&"
+        f"per_page={per_page}"
+    ) if page < total_pages else None
+
+    return {
+        "movies": movies,
+        "prev_page": prev_page,
+        "next_page": next_page,
+        "total_pages": total_pages,
+        "total_items": total_items
+    }
+
+
+@router.get("/movies/{movie_id}/", response_model=MovieDetailResponseSchema)
+async def get_movie_detail(
+        db: Annotated[AsyncSession, Depends(get_db)],
+        movie_id: int
+):
+    movie = await db.get(MovieModel, movie_id)
+    if not movie:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Movie with the given ID was not found."
+        )
+
+    return movie
