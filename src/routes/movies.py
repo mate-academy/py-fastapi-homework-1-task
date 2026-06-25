@@ -1,4 +1,5 @@
 from typing import Annotated
+import math
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select, func
@@ -21,7 +22,7 @@ async def get_movies(
 ):
     stmt = select(func.count()).select_from(MovieModel)
     total_items = await db.scalar(stmt)
-    total_pages = total_items // per_page + 1
+    total_pages = math.ceil(total_items / per_page)
 
     offset = (page - 1) * per_page
     stmt = select(MovieModel).offset(offset).limit(per_page)
