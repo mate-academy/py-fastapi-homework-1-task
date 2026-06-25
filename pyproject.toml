@@ -18,6 +18,9 @@ pytest-env = "^1.1.5"
 flake8 = "^7.1.1"
 aiosqlite = "^0.21.0"
 pytest-asyncio = "^0.25.3"
+pandas-stubs = "~=2.2.3"
+black = "^26.5.1"
+greenlet = "^3.5.2"
 
 
 [build-system]
