@@ -1,6 +1,6 @@
 import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator
 
 
 class MovieDetailResponseSchema(BaseModel):
@@ -14,10 +14,17 @@ class MovieDetailResponseSchema(BaseModel):
     orig_title: str
     status: str
     orig_lang: str
-    budget: float
-    revenue: float
+    budget: int
+    revenue: int
     country: str
     model_config = ConfigDict(from_attributes=True)
+
+    @field_validator("budget", "revenue", mode="before")
+    @classmethod
+    def float_to_int(cls, v):
+        if isinstance(v, (float, int)):
+            return int(v)
+        return v
 
 
 class MovieListResponseSchema(BaseModel):
