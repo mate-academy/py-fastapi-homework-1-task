@@ -1,10 +1,70 @@
+import math
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette import status
 
-from database import get_db, MovieModel
-
+from database.session import get_db
+from src.database.models import MovieModel
+from src.schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
 
 router = APIRouter()
 
-# Write your code here
+
+@router.get("/movies/", response_model=MovieListResponseSchema)
+async def get_movies(
+    page: int = Query(default=1, ge=1),
+    per_page: int = Query(default=10, ge=1, le=20),
+    db: AsyncSession = Depends(get_db),
+):
+    count_query = select(func.count(MovieModel.id))
+    results = await db.execute(count_query)
+    total_items = results.scalar()
+    if total_items == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="No movies found."
+        )
+    total_pages = math.ceil(total_items / per_page) if total_items > 0 else 0
+    if total_pages == 0 or page > total_pages:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="No movies found."
+        )
+    offset = (page - 1) * per_page
+    movies_query = select(MovieModel).offset(offset).limit(per_page)
+    movies_result = await db.execute(movies_query)
+    movies_list = movies_result.scalars().all()
+
+    if not movies_list:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="No movies found."
+        )
+    if page > 1:
+        prev_page = f"/theater/movies/?page={page - 1}&per_page={per_page}"
+    else:
+        prev_page = None
+
+    if page < total_pages:
+        next_page = f"/theater/movies/?page={page + 1}&per_page={per_page}"
+    else:
+        next_page = None
+
+    return {
+        "movies": movies_list,
+        "prev_page": prev_page,
+        "next_page": next_page,
+        "total_pages": total_pages,
+        "total_items": total_items,
+    }
+
+
+@router.get("/movies/{movie_id}/", response_model=MovieDetailResponseSchema)
+async def get_movie_by_id(movie_id: int, db: AsyncSession = Depends(get_db)):
+    movie_query = select(MovieModel).where(MovieModel.id == movie_id)
+    movie_result = await db.execute(movie_query)
+    movies = movie_result.scalar_one_or_none()
+    if movies is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Movie with the given ID was not found.",
+        )
+    return movies
