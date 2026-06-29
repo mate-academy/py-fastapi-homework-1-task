@@ -29,7 +29,7 @@ async def get_movies(
     total_items = total_results.scalar_one()
     total_pages = (total_items + per_page - 1) // per_page
 
-    base_url = "/api/v1/theater/movies/"
+    base_url = "/theater/movies/"
 
     prev_page = (
         f"{base_url}?page={page - 1}&per_page={per_page}"
