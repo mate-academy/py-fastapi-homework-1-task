@@ -8,6 +8,7 @@ from schemas.movies import MovieDetailResponseSchema, MovieListResponseSchema
 
 router = APIRouter()
 
+
 @router.get("/movies/", response_model=MovieListResponseSchema)
 async def get_movies(
     page: int = Query(1, ge=1),
@@ -24,8 +25,14 @@ async def get_movies(
     total_items = await db.scalar(select(func.count()).select_from(MovieModel))
     total_pages = (total_items + per_page - 1) // per_page
 
-    prev_page = page - 1 if page > 1 else None
-    next_page = page + 1 if page < total_pages else None
+    prev_page = (
+        f"/theater/movies/?page={page - 1}&per_page={per_page}"
+        if page > 1 else None
+    )
+    next_page = (
+        f"/theater/movies/?page={page + 1}&per_page={per_page}"
+        if page < total_pages else None
+    )
 
     return {
         "movies": movies,
