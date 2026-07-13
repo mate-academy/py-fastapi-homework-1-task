@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,7 +11,6 @@ router = APIRouter()
 
 @router.get("/movies/", response_model=MovieListResponseSchema)
 async def get_movies(
-    request: Request,
     page: int = Query(1, ge=1),
     per_page: int = Query(10, ge=1, le=20),
     db: AsyncSession = Depends(get_db),
@@ -35,7 +34,7 @@ async def get_movies(
     if not movies:
         raise HTTPException(status_code=404, detail="No movies found.")
 
-    base_path = request.url.path
+    base_path = "/theater/movies/"
     prev_page = (
         f"{base_path}?page={page - 1}&per_page={per_page}"
         if page > 1
@@ -60,7 +59,7 @@ async def get_movies(
 async def get_movie_by_id(
     movie_id: int,
     db: AsyncSession = Depends(get_db),
-) -> MovieModel:
+) -> MovieDetailResponseSchema:
     movie = await db.get(MovieModel, movie_id)
 
     if movie is None:
@@ -69,4 +68,4 @@ async def get_movie_by_id(
             detail="Movie with the given ID was not found.",
         )
 
-    return movie
+    return MovieDetailResponseSchema.model_validate(movie)
