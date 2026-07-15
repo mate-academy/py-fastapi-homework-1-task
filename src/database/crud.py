@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import HTTPException
 from sqlalchemy import select, func
-from sqlalchemy.ext.asyncio import AsyncSession, result
+from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
 from database import MovieModel
