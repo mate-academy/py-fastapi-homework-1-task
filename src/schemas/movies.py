@@ -1,5 +1,4 @@
 import datetime
-from decimal import Decimal
 from typing import List, Optional
 
 from pydantic import BaseModel, Field
@@ -30,7 +29,7 @@ class MovieDetailResponseSchema(MovieBaseSchema):
 
 class MovieListResponseSchema(BaseModel):
     movies: List[MovieDetailResponseSchema]
-    prev_page: Optional[str] = None
-    next_page: Optional[str] = None
+    prev_page: Optional[str] = ""
+    next_page: Optional[str] = ""
     total_pages: int
     total_items: int

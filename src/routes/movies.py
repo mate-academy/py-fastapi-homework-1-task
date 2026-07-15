@@ -3,7 +3,6 @@ import math
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
-from starlette.requests import Request
 
 from database import get_db, crud
 from schemas.movies import MovieListResponseSchema, MovieDetailResponseSchema
@@ -28,7 +27,6 @@ class PaginationParams:
     status_code=status.HTTP_200_OK,
 )
 async def get_movies(
-    request: Request,
     db: AsyncSession = Depends(get_db),
     pagination: PaginationParams = Depends()
 ):
@@ -37,13 +35,13 @@ async def get_movies(
     prev_page = None
     next_page = None
 
-    base_url = request.url.path
+    prefix = "/theater/movies/"
 
     if pagination.page > 1:
-        prev_page = f"{base_url}?page={pagination.page - 1}&per_page={pagination.per_page}"
+        prev_page = f"{prefix}?page={pagination.page - 1}&per_page={pagination.per_page}"
 
     if pagination.page < total_pages:
-        next_page = f"{base_url}?page={pagination.page + 1}&per_page={pagination.per_page}"
+        next_page = f"{prefix}?page={pagination.page + 1}&per_page={pagination.per_page}"
 
     movies = await crud.get_movies(db, limit=pagination.per_page, offset=pagination.skip)
 
