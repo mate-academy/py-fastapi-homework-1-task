@@ -27,7 +27,7 @@ async def get_all_movies(
             detail="No movies found."
         )
 
-    offset = total_items // per_page + page
+    offset = (page - 1) * per_page
 
     movies_result = await db.execute(
         select(
