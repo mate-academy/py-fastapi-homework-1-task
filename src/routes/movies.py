@@ -39,24 +39,7 @@ async def get_all_movies(
     movies_items = movies_result.scalars().all()
 
     return movies.MovieListResponseSchema(
-        movies=[
-            movies.MovieDetailResponseSchema(
-                id=movie_item.id,
-                name=movie_item.name,
-                date=movie_item.date,
-                score=movie_item.score,
-                genre=movie_item.genre,
-                overview=movie_item.overview,
-                crew=movie_item.crew,
-                orig_title=movie_item.orig_title,
-                status=movie_item.status,
-                orig_lang=movie_item.orig_lang,
-                budget=movie_item.budget,
-                revenue=movie_item.revenue,
-                country=movie_item.country
-            )
-            for movie_item in movies_items
-        ],
+        movies=list(movies_items),
         prev_page=(
             f"/theater/movies/?page={page}&per_page={per_page}"
             if page > 1 else None
@@ -86,18 +69,4 @@ async def get_movie_by_id(
             detail="Movie with the given ID was not found."
         )
 
-    return movies.MovieDetailResponseSchema(
-        id=movie.id,
-        name=movie.name,
-        date=movie.date,
-        score=movie.score,
-        genre=movie.genre,
-        overview=movie.overview,
-        crew=movie.crew,
-        orig_title=movie.orig_title,
-        orig_lang=movie.orig_lang,
-        status=movie.status,
-        budget=movie.budget,
-        revenue=movie.revenue,
-        country=movie.country
-    )
+    return movie
