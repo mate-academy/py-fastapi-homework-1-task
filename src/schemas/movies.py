@@ -1,6 +1,6 @@
 import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class MovieDetailResponseSchema(BaseModel):
@@ -17,6 +17,7 @@ class MovieDetailResponseSchema(BaseModel):
     budget: float
     revenue: float
     country: str
+    model_config = ConfigDict(from_attributes=True)
 
 
 class MovieListResponseSchema(BaseModel):
