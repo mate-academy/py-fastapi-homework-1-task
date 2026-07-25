@@ -15,7 +15,7 @@ class MovieSchema(BaseModel):
     status: str
     orig_lang: str
     budget: float
-    revenue: int
+    revenue: float
     country: str
 
     class Config:
@@ -26,8 +26,8 @@ class MovieListResponseSchema(BaseModel):
     movies: list[MovieSchema]
     total_pages: int
     total_items: int
-    prev_page: Optional[int] = None
-    next_page: Optional[int] = None
+    prev_page: Optional[str] = None
+    next_page: Optional[str] = None
 
 
 class MovieDetailResponseSchema(MovieSchema):
