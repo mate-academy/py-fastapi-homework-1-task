@@ -1,29 +1,28 @@
 from datetime import date
-from typing import List, Optional
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
+from typing import Optional
 
-
-class MovieDetailResponseSchema(BaseModel):
+class MovieSchema(BaseModel):
     id: int
     name: str
-    date: Optional[date] = None
+    date: date
     score: float
-    genre: Optional[str] = None
-    overview: Optional[str] = None
-    crew: Optional[str] = None
-    orig_title: Optional[str] = None
-    status: Optional[str] = None
-    orig_lang: Optional[str] = None
+    genre: str
+    overview: str
+    crew: str
+    orig_title: str
+    status: str
+    orig_lang: str
     budget: float
-    revenue: float
-    country: Optional[str] = None
+    revenue: int
+    country: str
 
-    model_config = ConfigDict(from_attributes=True)
-
+    class Config:
+        from_attributes = True
 
 class MovieListResponseSchema(BaseModel):
-    movies: List[MovieDetailResponseSchema]
-    prev_page: Optional[str] = None
-    next_page: Optional[str] = None
+    movies: list[MovieSchema]
     total_pages: int
     total_items: int
+    prev_page: Optional[int] = None
+    next_page: Optional[int] = None
