@@ -28,3 +28,8 @@ class MovieListResponseSchema(BaseModel):
     total_items: int
     prev_page: Optional[int] = None
     next_page: Optional[int] = None
+
+
+class MovieDetailResponseSchema(MovieSchema):
+    """Schema for individual movie detail response"""
+    pass
