@@ -1,11 +1,8 @@
-from typing import List
-
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from database import get_db, MovieModel
+from database import get_db
 from database.crud.movies import get_all_movies, get_movie_by_id
 from schemas.movies import MovieListResponseSchema, MovieDetailResponseSchema
 
@@ -15,7 +12,7 @@ router = APIRouter(prefix="/movies")
 @router.get("/")
 async def get_movies(
         page: int = Query(default=1, ge=1),
-        per_page: int = Query(default=10, ge=1, le=100),
+        per_page: int = Query(default=10, ge=1, le=20),
         db: AsyncSession = Depends(get_db)
 ) -> MovieListResponseSchema:
     movies, total_items = await get_all_movies(session=db, page=page, per_page=per_page)
