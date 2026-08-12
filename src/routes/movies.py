@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -13,6 +13,7 @@ router = APIRouter(prefix="/movies", tags=["movies"])
 @router.get("/", response_model=MovieListResponseSchema)
 async def get_movies(
     db: Annotated[AsyncSession, Depends(get_db)],
+    request: Request,
     page: int = Query(default=1, ge=1),
     per_page: int = Query(default=10, ge=1, le=20),
 ) -> dict:
@@ -30,7 +31,7 @@ async def get_movies(
     if not movies:
         raise HTTPException(status_code=404, detail="No movies found.")
 
-    base_url = "/api/v1/theater/movies/"
+    base_url = request.url.path
     return {
         "movies": movies,
         "prev_page": (
@@ -52,7 +53,7 @@ async def get_movies(
 async def get_movie_by_id(
     movie_id: int,
     db: Annotated[AsyncSession, Depends(get_db)],
-) -> MovieModel:
+) -> MovieDetailResponseSchema:
     movie = await db.get(MovieModel, movie_id)
 
     if movie is None:
