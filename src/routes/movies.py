@@ -15,7 +15,7 @@ router = APIRouter()
 def build_page_link(page: int, per_page: int, total_pages: int) -> Optional[str]:
     if page < 1 or page > total_pages:
         return None
-    return f"/api/v1/theater/movies/?page={page}&per_page={per_page}"
+    return f"/theater/movies/?page={page}&per_page={per_page}"
 
 
 @router.get("/movies/", response_model=MovieListResponseSchema)
