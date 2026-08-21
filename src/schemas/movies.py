@@ -4,7 +4,7 @@ from pydantic import BaseModel, ConfigDict
 
 
 class MovieDetailResponseSchema(BaseModel):
-    id: int
+    id: int  # noqa: VNE003
     name: str
     date: date
     score: float
