@@ -13,7 +13,7 @@ router = APIRouter(prefix="/movies", tags=["movies"])
 @router.get("/", response_model=MovieListResponseSchema)
 async def get_movies(
     page: int = Query(default=1, ge=1),
-    per_page: int = Query(default=10, ge=1, le=100),
+    per_page: int = Query(default=10, ge=1, le=20),
     db: AsyncSession = Depends(get_db),
 ):
     # 1. Count database row occurrences
@@ -45,8 +45,8 @@ async def get_movies(
     movies = movies_result.scalars().all()
 
     # 6. Build peripheral pagination string representations
-    prev_page = str(page - 1) if page > 1 else None
-    next_page = str(page + 1) if page < total_pages else None
+    prev_page = f"/movies/?page={page - 1}&per_page={per_page}" if page > 1 else None
+    next_page = f"/movies/?page={page + 1}&per_page={per_page}" if page < total_pages else None
 
     return {
         "movies": movies,
