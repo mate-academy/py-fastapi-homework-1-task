@@ -1,11 +1,12 @@
+from datetime import date as date_type
 from typing import List, Optional, Any
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_serializer
 
 
 class MovieDetailResponseSchema(BaseModel):
     id: int
     name: str
-    date: Optional[str] = None
+    date: Optional[Any] = None
     score: Optional[float] = None
     genre: Optional[str] = None
     overview: Optional[str] = None
@@ -18,6 +19,15 @@ class MovieDetailResponseSchema(BaseModel):
     country: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer('date')
+    def serialize_date(self, value: Optional[date_type]) -> Optional[str]:
+        if value is None:
+            return None
+        # Handles raw strings safely if already parsed by the driver
+        if isinstance(value, str):
+            return value
+        return value.isoformat()
 
 
 class MovieListResponseSchema(BaseModel):

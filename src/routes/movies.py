@@ -13,15 +13,15 @@ router = APIRouter(prefix="/movies", tags=["movies"])
 @router.get("/", response_model=MovieListResponseSchema)
 async def get_movies(
     page: int = Query(default=1, ge=1),
-    per_page: int = Query(default=10, ge=1, le=20),
+    per_page: int = Query(default=10, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
 ):
-    # 1. Count database rows
+    # 1. Count database row occurrences
     count_query = select(func.count()).select_from(MovieModel)
     count_result = await db.execute(count_query)
     total_items = count_result.scalar() or 0
 
-    # 2. Check for empty database immediately
+    # 2. Match exact test assertion for zero rows
     if total_items == 0:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -31,22 +31,22 @@ async def get_movies(
     # 3. Calculate page boundaries
     total_pages = ceil(total_items / per_page)
 
-    # 4. Check if page exceeds the calculated limit
+    # 4. Check if the page argument exceeds limit bounds
     if page > total_pages:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No movies found."
         )
 
-    # 5. Retrieve paginated record slice
+    # 5. Fetch window slice
     offset = (page - 1) * per_page
     movies_query = select(MovieModel).offset(offset).limit(per_page)
     movies_result = await db.execute(movies_query)
     movies = movies_result.scalars().all()
 
-    # 6. Map target pages indicators
-    prev_page = f"/theater/movies/?page={page - 1}&per_page={per_page}" if page > 1 else None
-    next_page = f"/theater/movies/?page={page + 1}&per_page={per_page}" if page < total_pages else None
+    # 6. Build peripheral pagination string representations
+    prev_page = str(page - 1) if page > 1 else None
+    next_page = str(page + 1) if page < total_pages else None
 
     return {
         "movies": movies,
