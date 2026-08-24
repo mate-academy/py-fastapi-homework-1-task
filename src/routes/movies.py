@@ -1,11 +1,11 @@
 from fastapi import APIRouter, HTTPException, Request
 from sqlalchemy import select, func
 
-from database import MovieModel, models
+from database import MovieModel
 from dependencies import DB, PaginationDep
 from schemas.movies import MoviesPageSchema, MovieDetailResponseSchema
 
-router = APIRouter(prefix="/movies", tags=["movies"])
+router = APIRouter(prefix="/movies")
 
 
 @router.get(
@@ -25,6 +25,9 @@ async def get_movies(request: Request, db: DB, pagination: PaginationDep):
     if not movies:
         raise HTTPException(status_code=404, detail="No movies found.")
 
+    # Use the full request path instead of hardcoding the endpoint URL.
+    # request.url.path includes the router prefix (/api/v1/theater) and
+    # the /movies/ path, so pagination links preserve the actual API path.
     base_path = request.url.path
 
     return MoviesPageSchema(
@@ -49,9 +52,7 @@ async def get_movies(request: Request, db: DB, pagination: PaginationDep):
     response_model=MovieDetailResponseSchema,
 )
 async def get_movie(movie_id: int, db: DB):
-    db_movie = await db.scalar(
-        select(models.MovieModel).where(models.MovieModel.id == movie_id)
-    )
+    db_movie = await db.scalar(select(MovieModel).where(MovieModel.id == movie_id))
 
     if not db_movie:
         raise HTTPException(
