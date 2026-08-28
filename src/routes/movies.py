@@ -15,7 +15,7 @@ async def get_movies(
     db: AsyncSession = Depends(get_db),
 ):
     total_items = await db.scalar(select(func.count()).select_from(MovieModel)) or 0
-    
+
     if total_items == 0:
         raise HTTPException(status_code=404, detail="No movies found.")
 
