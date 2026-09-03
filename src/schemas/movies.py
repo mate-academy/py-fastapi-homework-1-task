@@ -1,10 +1,11 @@
-from datetime import date
+﻿from datetime import date
 from typing import List, Optional
-from pydantic import BaseModel, ConfigDict, Field
+
+from pydantic import BaseModel, ConfigDict
 
 
 class MovieDetailResponseSchema(BaseModel):
-    id_: int = Field(alias="id")
+    id: int
     name: str
     date: date
     score: float
@@ -18,7 +19,7 @@ class MovieDetailResponseSchema(BaseModel):
     revenue: float
     country: str
 
-    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+    model_config = ConfigDict(from_attributes=True)
 
 
 class MovieListResponseSchema(BaseModel):
