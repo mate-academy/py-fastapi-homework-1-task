@@ -46,13 +46,13 @@ async def get_movies(
 
     if page > 1:
         prev_page = (
-            f"/api/v1/theater/movies/"
+            f"/theater/movies/"
             f"?page={page - 1}&per_page={per_page}"
         )
 
     if page < total_pages:
         next_page = (
-            f"/api/v1/theater/movies/"
+            f"/theater/movies/"
             f"?page={page + 1}&per_page={per_page}"
         )
 
