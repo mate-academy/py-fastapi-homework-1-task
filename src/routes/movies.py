@@ -46,22 +46,25 @@ async def get_all_movies(
     total_pages = math.ceil(total_items / per_page)
     base_path = request.app.url_path_for("movie-list")
 
-    prev_page = (
-        f"{base_path}?{urlencode({
-            'page': page - 1,
-            'per_page': per_page,
-        })}"
-        if page > 1
-        else None
-    )
-    next_page = (
-        f"{base_path}?{urlencode({
-            'page': page + 1,
-            'per_page': per_page,
-        })}"
-        if page < total_pages
-        else None
-    )
+    prev_page = None
+    if page > 1:
+        prev_query = urlencode(
+            {
+                "page": page - 1,
+                "per_page": per_page,
+            }
+        )
+        prev_page = f"{base_path}?{prev_query}"
+
+    next_page = None
+    if page < total_pages:
+        next_query = urlencode(
+            {
+                "page": page + 1,
+                "per_page": per_page,
+            }
+        )
+        next_page = f"{base_path}?{next_query}"
 
     return {
         "movies": movies,
