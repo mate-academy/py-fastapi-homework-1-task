@@ -9,6 +9,7 @@ from schemas.movies import MovieListResponseSchema, MovieDetailResponseSchema
 
 router = APIRouter()
 
+
 @router.get("/movies/", response_model=MovieListResponseSchema)
 async def paginate_movies(
         db: AsyncSession = Depends(get_db),
