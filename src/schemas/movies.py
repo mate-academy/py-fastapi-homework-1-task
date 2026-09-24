@@ -26,6 +26,7 @@ class MovieDetailResponseSchema(MovieBase):
 
     model_config = ConfigDict(from_attributes=True)
 
+
 class MovieListResponseSchema(BaseModel):
     movies: List[MovieDetailResponseSchema]
     prev_page: Optional[str]
