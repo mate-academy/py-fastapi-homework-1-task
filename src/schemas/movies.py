@@ -17,7 +17,7 @@ class MoviesBase(BaseModel):
     country: str
 
 
-class Movies(MoviesBase):
+class MovieDetailResponseSchema(MoviesBase):
     id: int
 
     class Config:
