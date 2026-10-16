@@ -2,7 +2,8 @@ from pydantic import BaseModel
 from datetime import date
 
 
-class MoviesBase(BaseModel):
+class MovieDetailResponseSchema(BaseModel):
+    id: int
     name: str
     date: date
     score: float
@@ -16,9 +17,16 @@ class MoviesBase(BaseModel):
     revenue: float
     country: str
 
+    class Config:
+        from_attributes = True
 
-class MovieDetailResponseSchema(MoviesBase):
-    id: int
+
+class MovieListResponseSchema(BaseModel):
+    movies: list[MovieDetailResponseSchema]
+    prev_page: str | None = None
+    next_page: str | None = None
+    total_pages: int
+    total_items: int
 
     class Config:
         from_attributes = True
