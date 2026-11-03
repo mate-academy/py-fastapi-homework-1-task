@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict
 class MovieDetailResponseSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    id: int
+    id: int  # noqa: VNE003
     name: str
     date: date
     score: float
@@ -27,5 +27,3 @@ class MovieListResponseSchema(BaseModel):
     next_page: str | None
     total_pages: int
     total_items: int
-
-

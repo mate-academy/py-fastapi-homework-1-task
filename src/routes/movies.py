@@ -14,7 +14,7 @@ async def get_movies(
     page: int = Query(1, ge=1),
     per_page: int = Query(10, ge=1, le=20),
     db: AsyncSession = Depends(get_db)
-):
+) -> MovieListResponseSchema:
     offset = (page - 1) * per_page
 
     count_result = await db.execute(select(func.count()).select_from(MovieModel))
@@ -48,7 +48,7 @@ async def get_movies(
 
 
 @router.get("/movies/{movie_id}/", response_model=MovieDetailResponseSchema)
-async def get_movie(movie_id: int, db: AsyncSession = Depends(get_db)):
+async def get_movie(movie_id: int, db: AsyncSession = Depends(get_db)) -> MovieDetailResponseSchema:
     result = await db.execute(
         select(MovieModel).where(MovieModel.id == movie_id)
     )
