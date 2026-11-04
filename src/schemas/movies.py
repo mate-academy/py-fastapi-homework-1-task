@@ -25,7 +25,6 @@ class MovieCreate(MovieBase):
     pass
 
 
-
 class MovieDetailResponseSchema(MovieBase):
     model_config = ConfigDict(from_attributes=True)
 
