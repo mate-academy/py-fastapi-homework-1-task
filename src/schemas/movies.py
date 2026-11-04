@@ -30,7 +30,7 @@ class MovieRead(MovieBase):
     id: int
 
 
-class MovieListResponseSchema(BaseModel):
+class MovieListResponseSchema(Base):
     movies: list[MovieBase]
     prev_page: str | None = None
     next_page: str | None = None

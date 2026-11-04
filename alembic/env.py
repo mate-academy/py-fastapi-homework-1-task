@@ -12,7 +12,7 @@ from src.config import get_settings
 BASE_DIR = Path(__file__).resolve().parents[1]
 sys.path.append(str(BASE_DIR / "src"))
 
-from database import *
+from database import * # noqa
 
 
 # this is the Alembic Config object, which provides
@@ -28,7 +28,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = Base.metadata
+target_metadata = Base.metadata # noqa
 
 settings = get_settings()
 config.set_main_option("sqlalchemy.url", f"sqlite:///{settings.PATH_TO_DB}")
