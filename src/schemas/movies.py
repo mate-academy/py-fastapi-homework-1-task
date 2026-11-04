@@ -1,17 +1,18 @@
-from datetime import datetime
+from datetime import date
+import typing
+import json
+from pydantic import ConfigDict, BaseModel, field_validator
 
-from pydantic import ConfigDict
 
-from database import Base
+class MovieBase(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
 
-
-class MovieBase(Base):
     name: str
-    date: datetime
+    date: date
     score: float
     genre: str
     overview: str
-    crew: list[str]
+    crew: str
     orig_title: str
     status: str
     orig_lang: str
@@ -24,14 +25,15 @@ class MovieCreate(MovieBase):
     pass
 
 
-class MovieRead(MovieBase):
+
+class MovieDetailResponseSchema(MovieBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
 
 
-class MovieListResponseSchema(Base):
-    movies: list[MovieBase]
+class MovieListResponseSchema(BaseModel):
+    movies: list[MovieDetailResponseSchema]
     prev_page: str | None = None
     next_page: str | None = None
     total_pages: int

@@ -8,7 +8,6 @@ from starlette import status
 
 import schemas
 from database import get_db, MovieModel
-from schemas import MovieListResponseSchema
 
 router = APIRouter()
 
@@ -19,8 +18,8 @@ router = APIRouter()
 )
 async def movies_get(
         request: Request,
-        page: Annotated[int, Query(default=1, ge=1)] = 1,
-        per_page: Annotated[int, Query(default=10, ge=1, le=20)] = 10,
+        page: Annotated[int, Query(ge=1)] = 1,
+        per_page: Annotated[int, Query(ge=1, le=20)] = 10,
         db: AsyncSession = Depends(get_db)
 ):
     base_endpoint = request.url.path
@@ -54,7 +53,7 @@ async def movies_get(
         else None
     )
 
-    return MovieListResponseSchema(
+    return schemas.movies.MovieListResponseSchema(
         movies=movies,
         prev_page=prev_page,
         next_page=next_page,
@@ -65,7 +64,7 @@ async def movies_get(
 
 @router.get(
     "/movies/{movie_id}/",
-    response_model=schemas.movies.MovieRead
+    response_model=schemas.movies.MovieDetailResponseSchema
 )
 async def movie_get(movie_id: int, db: AsyncSession = Depends(get_db)):
     query = select(MovieModel).where(MovieModel.id == movie_id)
