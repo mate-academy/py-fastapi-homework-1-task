@@ -27,4 +27,3 @@ class MovieDetailResponseSchema(MovieBase):
 
 class MovieListResponseSchema(BaseListPaginationSchema):
     movies: list[MovieDetailResponseSchema]
-
