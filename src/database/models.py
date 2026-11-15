@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import String, Float, Text, DECIMAL, UniqueConstraint, Date
+from sqlalchemy import String, Float, Text, DECIMAL, UniqueConstraint, Date, CheckConstraint
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
 
 
@@ -10,6 +10,10 @@ class Base(DeclarativeBase):
 
 class MovieModel(Base):
     __tablename__ = "movies"
+
+    __table_args__ = (
+        CheckConstraint("score >= 0 AND score <= 100", name="check_movie_score_range"),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
