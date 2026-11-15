@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Request, Query, HTTPException
+from sqlalchemy import select
 
 from database.session import get_db, AsyncSQLiteSessionLocal
 from database.models import MovieModel
@@ -40,3 +41,16 @@ async def get_movies(
         total_items=total_items,
         movies=[MovieDetailResponseSchema.model_validate(movie) for movie in movies],
     )
+
+
+@router.get('/movies/{movie_id}/', response_model=MovieDetailResponseSchema)
+async def get_movie(movie_id: int, db: AsyncSQLiteSessionLocal = Depends(get_db)):
+    movie_selection = select(MovieModel).where(MovieModel.id == movie_id)
+
+    selection_result = await db.execute(movie_selection)
+    movie = selection_result.scalar_one_or_none()
+
+    if movie is None:
+        raise HTTPException(status_code=404, detail="Movie with the given ID was not found.")
+
+    return MovieDetailResponseSchema.model_validate(movie)
